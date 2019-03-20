@@ -6,9 +6,10 @@ package Oberth::Prototype;
 use Env qw(@PATH);
 use Config;
 
-use FindBin;
+use Oberth::Prototype::FindOberthPrototype;
 
-use constant BUILD_TOOLS_DIR => File::Spec->catfile( $FindBin::Bin, '..', qw(extlib));
+use constant OP_DIR => Oberth::Prototype::FindOberthPrototype->get_oberth_prototype_path_via_bin;
+use constant BUILD_TOOLS_DIR => File::Spec->catfile( OP_DIR , qw(extlib));
 
 use constant BIN_DIRS => [
 	'bin'
@@ -20,7 +21,7 @@ use constant PERL_LIB_DIRS => [
 
 BEGIN {
 	require File::Glob;
-	our @VENDOR_LIB = File::Glob::bsd_glob("$FindBin::Bin/../vendor/*/lib");
+	our @VENDOR_LIB = File::Glob::bsd_glob( OP_DIR . "/vendor/*/lib");
 	unshift @INC, @VENDOR_LIB;
 
 	my $lib_dir = BUILD_TOOLS_DIR;

@@ -4,8 +4,8 @@ package Oberth::Prototype::Command::Bootstrap;
 # ABSTRACT: Bootstrap a repo
 
 use feature 'say';
-use FindBin;
-use Cwd qw(getcwd realpath);
+use Oberth::Prototype::FindOberthPrototype;
+use Cwd qw(getcwd);
 use IPC::Open3;
 use File::Spec;
 use File::Find;
@@ -44,11 +44,11 @@ sub new {
 
 	die "need command: $commands_re" unless $command;
 
-	my $oberthian_dir = realpath( File::Spec->rel2abs(File::Spec->catfile($FindBin::Bin, '..')) );
+	my $op_dir = Oberth::Prototype::FindOberthPrototype->get_oberth_prototype_path_via_bin;
 
 	my ($bin_dir, $lib_dir);
 	if( ! $global ) {
-		$dir = File::Spec->catfile( $oberthian_dir, qw(extlib)) unless $dir;
+		$dir = File::Spec->catfile( $op_dir, qw(extlib)) unless $dir;
 
 		$bin_dir = File::Spec->catfile($dir, qw(bin));
 		make_path $bin_dir;
@@ -64,13 +64,13 @@ sub new {
 
 	bless {
 		command => $command,
-		oberthian_dir => $oberthian_dir,
+		oberthian_dir => $op_dir,
 		dir => $dir,
 		global => $global,
 		bin_dir => $bin_dir,
 		lib_dir => $lib_dir,
-		vendor_dir => File::Spec->catfile($oberthian_dir, qw(vendor)),
-		vendor_external_dir => File::Spec->catfile($oberthian_dir, qw(vendor-external)),
+		vendor_dir => File::Spec->catfile($op_dir, qw(vendor)),
+		vendor_external_dir => File::Spec->catfile($op_dir, qw(vendor-external)),
 	}, $package;
 }
 
