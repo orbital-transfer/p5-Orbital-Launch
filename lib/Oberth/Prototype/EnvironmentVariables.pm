@@ -30,7 +30,7 @@ method _add_command( (Maybe[Str]) $variable, $data, $code ) {
 }
 
 method prepend_path_list( (Str) $variable, (ArrayRef) $paths = [] ) {
-	$self->_add_command( $variable, $paths, fun( $env ) {
+	$self->_add_command( $variable, $paths, fun( $env, $hash ) {
 		join $Config{path_sep}, @$paths, $env ? $env : ()
 	});
 }
