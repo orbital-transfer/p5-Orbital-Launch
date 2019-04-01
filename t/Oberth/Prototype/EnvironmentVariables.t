@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Test::Most tests => 2;
+use Test::Most tests => 3;
 use Modern::Perl;
 use Object::Util;
 
@@ -41,6 +41,26 @@ subtest "Paths: append" => sub {
 	$env->append_path_list( 'TEST_PATH', [ 'c', 'd' ]  );
 	is $env->environment_hash->{TEST_PATH}, "a${sep}b${sep}c${sep}d";
 
+};
+
+subtest "Add environments" => sub {
+	my $env = Oberth::Prototype::EnvironmentVariables->new
+		->new;
+
+	ok ! exists $env->environment_hash->{TEST_ENV_VAR};
+
+	$env->set_string( 'TEST_ENV_VAR', 'test'  );
+	is $env->environment_hash->{TEST_ENV_VAR}, 'test';
+
+	my $add_env = Oberth::Prototype::EnvironmentVariables->new
+		->new;
+
+
+	$env->add_environment( $add_env );
+	ok ! exists $env->environment_hash->{TEST_ADD_VAR};
+
+	$add_env->set_string( 'TEST_ADD_VAR', 'add' );
+	is $env->environment_hash->{TEST_ADD_VAR}, 'add';
 };
 
 done_testing;

@@ -20,7 +20,7 @@ has _commands => (
 	default => sub { [] },
 );
 
-method _add_command( (Str) $variable, $data, $code ) {
+method _add_command( (Maybe[Str]) $variable, $data, $code ) {
 	push @{ $self->_commands }, {
 		var => $variable,
 		cmd => (caller(1))[3],
@@ -36,27 +36,46 @@ method prepend_path_list( (Str) $variable, (ArrayRef) $paths = [] ) {
 }
 
 method append_path_list( (Str) $variable, (ArrayRef) $paths = [] ) {
-	$self->_add_command( $variable, $paths, fun( $env ) {
+	$self->_add_command( $variable, $paths, fun( $env, $hash ) {
 		join $Config{path_sep}, ( $env ? $env : () ), @$paths
 	});
 }
 
 method prepend_string( (Str) $variable, (Str) $string = '' ) {
-	$self->_add_command( $variable, $string, fun( $env ) {
+	$self->_add_command( $variable, $string, fun( $env, $hash ) {
 		$string . $env
 	});
 }
 
 method append_string( (Str) $variable, (Str) $string = '' ) {
-	$self->_add_command( $variable, $string, fun( $env ) {
+	$self->_add_command( $variable, $string, fun( $env, $hash ) {
 		$env . $string
 	});
 }
 
 method set_string( (Str) $variable, (Str) $string = '' ) {
-	$self->_add_command( $variable, $string, fun( $env ) {
+	$self->_add_command( $variable, $string, fun( $env, $hash ) {
 		$string
 	});
+}
+
+method add_environment( (InstanceOf['Oberth::Prototype::EnvironmentVariables']) $env_vars) {
+	$self->_add_command( undef, $env_vars, fun( $env, $hash ) {
+		$self->_run_commands( $env_vars->_commands, $hash );
+	});
+};
+
+method _run_commands( $commands, $env ) {
+	for my $command ( @$commands ) {
+		if( defined $command->{var} ) {
+			$env->{ $command->{var} } = $command->{code}->(
+				$env->{ $command->{var} } // '',
+				$env );
+		} else {
+			$command->{code}->( undef, $env );
+
+		}
+	}
 }
 
 method environment_hash() {
@@ -68,9 +87,7 @@ method environment_hash() {
 		$env = { %ENV };
 	}
 
-	for my $command ( @{ $self->_commands } ) {
-		$env->{ $command->{var} } = $command->{code}->( $env->{ $command->{var} } // '' );
-	}
+	$self->_run_commands( $self->_commands, $env );
 
 	$env;
 }
