@@ -11,7 +11,7 @@ use Oberth::Prototype::EnvironmentVariables;
 my $runner = Oberth::Prototype::Runner::Default->new;
 
 subtest "Set environment" => sub {
-	my $cmd = [ qw(sh -c), q(echo -n $TEST_RUNNER) ];
+	my $cmd = [ $^X, qw(-e), q(print $ENV{TEST_RUNNER}) ];
 	local $ENV{TEST_RUNNER} = 'first capture';
 	my ($output_local) = $runner->capture(
 		Oberth::Prototype::Runnable->new(
