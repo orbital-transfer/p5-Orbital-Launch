@@ -1,11 +1,17 @@
 #!/usr/bin/env perl
 
-use Test::Most tests => 2;
+use Test::Most;
 
 use Oberth::Prototype::PackageManager::APT;
 use Oberth::Prototype::Runner::Default;
 use Oberth::Prototype::RepoPackage::APT;
 use aliased 'Oberth::Prototype::Runnable';
+
+if( ! Oberth::Prototype::PackageManager::APT->loadable ) {
+	plan skip_all => 'Test needs Debian system';
+} else {
+	plan tests => 2;
+};
 
 sub init {
 	my $runner = Oberth::Prototype::Runner::Default->new;

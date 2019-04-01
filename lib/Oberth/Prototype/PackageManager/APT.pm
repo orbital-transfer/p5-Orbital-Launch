@@ -7,6 +7,13 @@ use Oberth::Manoeuvre::Common::Setup;
 use aliased 'Oberth::Prototype::Runnable';
 use Oberth::Prototype::PackageManager::dpkg;
 use List::AllUtils qw(all);
+use File::Which;
+
+classmethod loadable() {
+	all {
+		defined which($_)
+	} qw(apt-cache apt-get);
+}
 
 lazy dpkg => method() {
 	Oberth::Prototype::PackageManager::dpkg->new(
