@@ -261,7 +261,7 @@ method run_test() {
 		}
 	}
 
-	$self->platform->build_perl->script(
+	my $test_command = $self->platform->build_perl->script_command(
 		qw(cpanm),
 		qw(--no-man-pages),
 		$self->_install_perl_deps_cpanm_dir_arg,
@@ -269,6 +269,8 @@ method run_test() {
 		qw(--test-only),
 		$self->dzil_build_dir
 	);
+	$test_command->environment->add_environment( $test_env );
+	$self->runner->system( $test_command );
 
 	if( $self->config->has_oberth_coverage ) {
 		local $CWD = File::Spec->catfile( $self->directory, $self->dzil_build_dir );
