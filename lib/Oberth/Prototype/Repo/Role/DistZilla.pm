@@ -272,7 +272,7 @@ method run_test() {
 
 	if( $self->config->has_oberth_coverage ) {
 		local $CWD = File::Spec->catfile( $self->directory, $self->dzil_build_dir );
-		if( $self->oberth_coverage eq 'coveralls' ) {
+		if( $self->config->oberth_coverage eq 'coveralls' ) {
 			$self->platform->build_perl->script(
 				qw(cover), qw(-report coveralls)
 			);
