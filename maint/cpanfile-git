@@ -1,0 +1,3 @@
+requires 'Oberth::Manoeuvre',
+	git => 'https://github.com/oberth-manoeuvre/p5-Oberth-Manoeuvre.git',
+	branch => 'master';
