@@ -9,6 +9,9 @@ method commands() {
 		'launch' => 'Oberth::CLI::Command::Launch',
 		'launch/repo-info' => 'Oberth::CLI::Command::Launch::RepoInfo',
 		'launch/pod-site' => 'Oberth::CLI::Command::Launch::PodSite',
+		'launch/vagrant' => 'Oberth::CLI::Command::Launch::Vagrant',
+		'launch/vagrant/helper' => 'Oberth::CLI::Command::Launch::Vagrant::Helper',
+		'launch/vagrant/project-directories' => 'Oberth::CLI::Command::Launch::Vagrant::ProjectDirectories',
 	}
 }
 
