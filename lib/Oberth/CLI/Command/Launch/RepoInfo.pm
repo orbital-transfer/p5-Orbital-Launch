@@ -9,42 +9,17 @@ use Clone qw(clone);
 use Try::Tiny;
 use Path::Tiny;
 
+lazy finder => method() {
+	eval "require Oberth::Block::Meta::GitGot::RepoFinder"; ## no critic: 'ProhibitStringyEval'
+	my $finder = Oberth::Block::Meta::GitGot::RepoFinder->new;
+};
+
 method run() {
 	## no critic: 'ProhibitStringyEval'
 	eval q|
 		use DDP; p $self->get_info( $self->repo_path );
 	|;
 }
-
-lazy gitgot_github => method() {
-	eval "require Oberth::Block::Meta::GitGot"; ## no critic: 'ProhibitStringyEval'
-
-	my $gitgot = Oberth::Block::Meta::GitGot->new;
-	my @gitgot_github = map {
-		try {
-			die unless defined $_->repo_url;
-			+{
-				gitgot => $_,
-				github_repo => Oberth::Block::Service::GitHub::Repo->new(
-					uri => $_->repo_url,
-				),
-			}
-		} catch {
-			();
-		};
-	} @{ $gitgot->data };
-
-	\@gitgot_github;
-};
-
-lazy git_scp_to_path => method() {
-	+{
-		map {
-			$_->{github_repo}->git_scp_uri
-				=> $_->{gitgot}->repo_path
-		} @{ $self->gitgot_github }
-	};
-};
 
 has _info_cache => (
 	is => 'ro',
@@ -78,7 +53,7 @@ method get_info( $path ) {
 			uri => $deps->{$name}{git},
 		);
 
-		my $dep_path = $self->git_scp_to_path->{ $github->git_scp_uri };
+		my $dep_path = $self->finder->find_path( $github );
 
 		$info->{deps}{$name} = $self->get_info(
 			$dep_path,
