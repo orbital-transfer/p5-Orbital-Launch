@@ -57,8 +57,10 @@ lazy environment => method() {
 	)
 	->$_tap( 'prepend_path_list', 'PERL5LIB', $self->library_paths )
 	->$_tap( 'prepend_path_list', 'PATH', [
-		$self->sitebin_path,
-		$self->vendorbin_path
+		grep { defined } (
+			$self->sitebin_path,
+			$self->vendorbin_path
+		)
 	]);
 };
 
