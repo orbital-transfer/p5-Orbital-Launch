@@ -17,6 +17,7 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 		#my $targ = caller;
 		my $targ = "main";
 		my $wm = $targ->can("WriteMakefile");
+		no strict "refs"; ## no critic: 'RequireUseStrict'
 		*{"${targ}::WriteMakefile"} = sub {
 			my %args = @_;
 			# Only apply :nosearch after lib linker directory
@@ -27,6 +28,7 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 			# The pattern needs to be case-insensitive because
 			# Windows is case-insensitive.
 			chomp(my $lib_path = `cygpath -m /mingw64/lib`);
+			$args{LIBS} = '' unless $args{LIBS};
 			$args{LIBS} =~ s,^(.*?)(\Q-L$lib_path\E\s),$1 :nosearch $2,i;
 
 			# Special case for expat (XML::Parser::Expat) because
