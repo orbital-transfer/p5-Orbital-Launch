@@ -11,6 +11,7 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 
 	my $i = ExtUtils::MakeMaker->can("import");
 	no warnings "redefine";
+	no warnings "once";
 	*ExtUtils::MakeMaker::import = sub {
 		&$i;
 		#my $targ = caller;
