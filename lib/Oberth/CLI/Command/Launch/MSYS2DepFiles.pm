@@ -1,13 +1,17 @@
-#!/usr/bin/env perl
+use Oberth::Manoeuvre::Common::Setup;
+package Oberth::CLI::Command::Launch::MSYS2DepFiles;
+# ABSTRACT: List/copy MSYS2 files
 
 use Modern::Perl;
+use Mu;
+use CLI::Osprey;
 use Path::Tiny;
 use Capture::Tiny qw(capture_stdout);
 use File::Copy;
 use YAML::XS qw(Dump Load);
 use Term::ProgressBar;
 
-sub build_msys2_file_list {
+method build_msys2_file_list() {
 	my $package_list_file = shift @ARGV
 		or die "Need to pass path to package list\n";
 	$package_list_file = path( $package_list_file );
@@ -51,7 +55,7 @@ sub build_msys2_file_list {
 	print Dump( $output );
 }
 
-sub get_list_of_files {
+method get_list_of_files() {
 	my $data = shift @_;
 
 	my @all_file_list;
@@ -116,15 +120,15 @@ sub copy_files_to_prefix {
 	system( qw(glib-compile-schemas), path( $prefix, qw(mingw64 share glib-2.0 schemas) ) );
 }
 
-sub main {
+method run() {
 	my $command = shift @ARGV
 		or die "No command given: $0 [files|copy]\n";
 
 	if( $command eq 'files' ) {
-		build_msys2_file_list;
+		$self->build_msys2_file_list;
 	} elsif( $command eq 'copy' ) {
-		copy_files_to_prefix;
+		$self->copy_files_to_prefix;
 	}
 }
 
-main;
+1;
