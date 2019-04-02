@@ -1,4 +1,7 @@
-package EUMMnosearch;
+use strict;
+use warnings;
+package Oberth::Prototype::System::MSWin32::EUMMnosearch;
+# ABSTRACT: Hack ExtUtils::MakeMaker library searching on MSWin32
 
 package main;
 # only run when we call the Makefile.PL script

@@ -61,7 +61,7 @@ lazy environment => method() {
 	$env->set_string('OPENSSL_PREFIX', $self->msystem_base_path);
 
 	use FindBin;
-	$env->set_string('PERL5OPT', "-I@{[ File::Spec->catfile( $FindBin::Bin, '..', qw{project-renard devops script mswin} ) ]} -MEUMMnosearch");
+	$env->set_string('PERL5OPT', "-I@{[ File::Spec->catfile( $FindBin::Bin, '..', qw{lib} ) ]} -MOberth::Prototype::System::MSWin32::EUMMnosearch");
 
 	$env;
 };
