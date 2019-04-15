@@ -30,16 +30,16 @@ method get_info( $path ) {
 	my $info;
 	return $self->_info_cache->{$path} if exists $self->_info_cache->{$path};
 
-	require Oberth::Prototype::Repo;
-	my $repo = Oberth::Prototype::Repo->new(
+	require Oberth::Launch::Repo;
+	my $repo = Oberth::Launch::Repo->new(
 		directory => $path,
 		config => undef,
 		platform => undef,
 	);
 
-	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Prototype::Repo::Role::DistZilla');
-	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Prototype::Repo::Role::CpanfileGit');
-	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Prototype::Repo::Role::DevopsYaml');
+	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Launch::Repo::Role::DistZilla');
+	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Launch::Repo::Role::CpanfileGit');
+	Moo::Role->apply_roles_to_object( $repo, 'Oberth::Launch::Repo::Role::DevopsYaml');
 
 	$info->{path} = path($path);
 	try {

@@ -1,6 +1,6 @@
 #!perl
 # PODNAME: oberthian
-# ABSTRACT: Oberth prototype script
+# ABSTRACT: Oberth launch script
 
 use strict;
 use warnings;
@@ -10,11 +10,11 @@ use lib "$FindBin::Bin/../lib";
 
 sub main {
 	if( @ARGV && $ARGV[0] eq 'bootstrap' ) {
-		require Oberth::Prototype::Command::Bootstrap;
-		Oberth::Prototype::Command::Bootstrap->new->run;
+		require Oberth::Launch::Command::Bootstrap;
+		Oberth::Launch::Command::Bootstrap->new->run;
 	} else {
-		require Oberth::Prototype;
-		Oberth::Prototype->new_with_options->run;
+		require Oberth::Launch;
+		Oberth::Launch->new_with_options->run;
 	}
 }
 
