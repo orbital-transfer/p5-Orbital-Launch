@@ -69,16 +69,27 @@ method install_perl_build( @dists ) {
 
 method install_perl_deps( @dists ) {
 	my $global = $self->config->cpan_global_install;
-	# TODO ignore modules that are installed already: --skip-installed
 	try {
 	$self->platform->build_perl->script(
 		qw(cpm install),
 		@{ $global ? [ qw(-g) ] : [ qw(-L), $self->config->lib_dir ] },
 		@dists
 	);
-	} catch { };
+
 	$self->platform->build_perl->script(
 		qw(cpanm -qn),
+		$self->_install_perl_deps_cpanm_dir_arg,
+		@dists
+	);
+	} catch { };
+
+	# Ignore modules that are installed already without checking CPAN for
+	# version: `--skip-satisfied` .
+	# This may need to be improved by looking for versions of modules that
+	# are installed via cpanfile-git instead of from CPAN.
+	$self->platform->build_perl->script(
+		qw(cpanm -qn),
+		qw(--skip-satisfied),
 		$self->_install_perl_deps_cpanm_dir_arg,
 		@dists
 	);
