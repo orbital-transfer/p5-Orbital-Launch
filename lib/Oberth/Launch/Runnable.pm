@@ -9,6 +9,9 @@ use Types::TypeTiny qw(StringLike);
 
 use Oberth::Launch::EnvironmentVariables;
 
+use MooX::Role::CloneSet qw();
+with qw(MooX::Role::CloneSet);
+
 has command => (
 	is => 'ro',
 	isa => ArrayRef[StringLike],
