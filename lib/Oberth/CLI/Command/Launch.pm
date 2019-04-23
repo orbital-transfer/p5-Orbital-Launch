@@ -6,7 +6,8 @@ use Moo;
 use CLI::Osprey;
 
 method run() {
-	...
+	require Oberth::Launch;
+	Oberth::Launch->new_with_options->run;
 }
 
 1;
