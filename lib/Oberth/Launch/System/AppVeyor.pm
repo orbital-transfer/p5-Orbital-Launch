@@ -65,6 +65,11 @@ lazy environment => method() {
 	$path =~ s,\\,/,g;
 	$env->set_string('PERL5OPT', "-I$path -MOberth::Launch::System::MSWin32::EUMMnosearch");
 
+	# MSYS/MinGW pkg-config command line is more reliable since it does the
+	# needed path conversions. Note that there are three pkg-config
+	# packages, one for each subsystem.
+	$env->set_string('ALIEN_BUILD_PKG_CONFIG', 'PkgConfig::CommandLine' );
+
 	$env;
 };
 
