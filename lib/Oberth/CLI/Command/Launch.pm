@@ -10,4 +10,9 @@ method run() {
 	Oberth::Launch->new_with_options->run;
 }
 
+subcommand 'test' => method() {
+	require Oberth::Launch;
+	Oberth::Launch->new_with_options->test;
+};
+
 1;
