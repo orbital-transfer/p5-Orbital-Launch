@@ -4,9 +4,12 @@ package Oberth::Launch::Runner::Default;
 
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
-use IPC::System::Simple ();
 use Capture::Tiny ();
 use aliased 'Oberth::Launch::Runnable::Sudo';
+
+use IO::Async::Loop;
+use IO::Async::Function;
+use IO::Async::Timer::Periodic;
 
 method system( $runnable ) {
 	if( $runnable->admin_privilege ) {
@@ -23,9 +26,46 @@ method system( $runnable ) {
 		}
 	}
 
-	local %ENV = %{ $runnable->environment->environment_hash };
-	use autodie qw(:system);
-	system( @{ $runnable->command } );
+	my $loop = IO::Async::Loop->new;
+
+	$loop->add(my $timer = IO::Async::Timer::Periodic->new(
+		interval => 60,
+
+		on_tick => sub {
+			print ".\n";
+		},
+	)->start);
+
+	$loop->add(my $function = IO::Async::Function->new(
+		code => sub {
+			my ( $env, $command ) = @_;
+
+			local %ENV = %{ $env };
+			my $exit = CORE::system( @{ $command } );
+		},
+	));
+
+	my $exit;
+
+	say "Running command @{ $runnable->command }";
+	$function->call(
+		args => [
+			$runnable->environment->environment_hash,
+			$runnable->command,
+		],
+		on_return => sub { $exit = shift },
+		on_error => sub { },
+	);
+
+	$loop->loop_once while ! defined $exit;
+
+	$timer->stop;
+
+	if( $exit != 0 ) {
+		die "Command '@{ $runnable->command }' exited with $exit";
+	}
+
+	return $exit;
 }
 
 method capture( $runnable ) {
