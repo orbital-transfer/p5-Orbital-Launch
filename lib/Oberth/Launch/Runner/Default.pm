@@ -23,14 +23,23 @@ lazy loop => method() {
 
 lazy system_function => method() {
 	my $function = IO::Async::Function->new(
-		code => sub {
-			my ( $env, $command ) = @_;
-
-			local %ENV = %{ $env };
-			my $exit = CORE::system( @{ $command } );
-		},
+		code => \&_system_with_env,
 	);
 };
+
+sub _system_with_env {
+	my ( $env, $command ) = @_;
+
+	local %ENV = %{ $env };
+	my $exit = CORE::system( @{ $command } );
+}
+
+method _system_with_env_args( $runnable ) {
+	return (
+		$runnable->environment->environment_hash,
+		$runnable->command,
+	);
+}
 
 lazy timer => method() {
 	my $timer = IO::Async::Timer::Periodic->new(
@@ -42,20 +51,41 @@ lazy timer => method() {
 	);
 };
 
-method system( $runnable ) {
+method _to_sudo($runnable) {
 	if( $runnable->admin_privilege ) {
 		if( ! Sudo->is_admin_user ) {
 			if( Sudo->has_sudo_command
 				&& Sudo->sudo_does_not_require_password ) {
 
 				$runnable = Sudo->to_sudo_runnable( $runnable );
-
 			} else {
 				warn "Not running command (requires admin privilege): @{ $runnable->command }";
-				return;
 			}
 		}
 	}
+
+	return $runnable;
+}
+
+method system_sync( $runnable ) {
+	$runnable = $self->_to_sudo( $runnable );
+
+	my $exit;
+
+	say STDERR "Running command @{ $runnable->command }";
+	$exit = _system_with_env( $self->_system_with_env_args(
+		$runnable
+	));
+
+	if( $exit != 0 ) {
+		die "Command '@{ $runnable->command }' exited with $exit";
+	}
+
+	return $exit;
+}
+
+method system( $runnable ) {
+	$runnable = $self->_to_sudo( $runnable );
 
 	my $loop = $self->loop;
 
@@ -65,10 +95,7 @@ method system( $runnable ) {
 
 	say STDERR "Running command @{ $runnable->command }";
 	$self->system_function->call(
-		args => [
-			$runnable->environment->environment_hash,
-			$runnable->command,
-		],
+		args => [ $self->_system_with_env_args( $runnable ) ],
 		on_return => sub { $exit = shift },
 		on_error => sub { },
 	);
@@ -86,7 +113,7 @@ method system( $runnable ) {
 
 method capture( $runnable ) {
 	Capture::Tiny::capture(sub {
-		$self->system( $runnable );
+		$self->system_sync( $runnable );
 	})
 }
 
