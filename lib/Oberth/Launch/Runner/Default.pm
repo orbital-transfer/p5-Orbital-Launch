@@ -60,6 +60,8 @@ method system( $runnable ) {
 	$loop->loop_once while ! defined $exit;
 
 	$timer->stop;
+	$function->stop;
+	$loop->loop_stop;
 
 	if( $exit != 0 ) {
 		die "Command '@{ $runnable->command }' exited with $exit";
