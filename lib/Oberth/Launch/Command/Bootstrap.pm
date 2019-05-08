@@ -88,11 +88,13 @@ sub run_setup {
 	$self->{cpm} = 'cpm';
 	$self->install_self_contained_cpm unless $self->has_cpm;
 
+	$self->log('Installing cpanminus using cpm');
 	$self->_cpm(
 		'--resolver', '02packages,http://cpan.metacpan.org',
 		qw(App::cpanminus),
 	) unless $self->has_cpanm;
 
+	$self->log('Installing prereq scanner');
 	$self->_cpanm(
 		#qw(Perl::PrereqScanner::Lite),
 		#qw(Perl::PrereqScanner),
@@ -103,7 +105,7 @@ sub run_setup {
 sub _cpm {
 	my ($self, @args) = @_;
 
-	system( $^X, qw(-S), $self->{cpm}, qw(install),
+	$self->system( $^X, qw(-S), $self->{cpm}, qw(install),
 		qw(--verbose),
 		@{ $self->{global} ? [ qw(-g) ] : [ qw(-L), $self->{dir}, ] },
 		@args,
@@ -113,7 +115,7 @@ sub _cpm {
 sub _cpanm {
 	my ($self, @args) = @_;
 
-	system( $^X, qw(-S), qw(cpanm),
+	$self->system( $^X, qw(-S), qw(cpanm),
 		qw(-nq),
 		@{ $self->{global} ? [] : [ qw(-L), $self->{dir}, ] },
 		@args,
@@ -122,6 +124,8 @@ sub _cpanm {
 
 sub create_cpanfile_in_directory {
 	my ($self, $dir) = @_;
+
+	$self->log("Creating cpanfile for $dir");
 
 	my ($wtr, $rdr, $err);
 
@@ -200,7 +204,8 @@ sub run_install_deps_from_cpanfile {
 }
 
 sub run_docker_install_apt {
-	system(<<'EOF');
+	my ($self) = @_;
+	$self->system(<<'EOF');
 	apt-get update && \
 		xargs apt-get install -y --no-install-recommends \
 		< /oberth-prototype/maint/docker-debian-packages
@@ -220,11 +225,12 @@ sub run {
 sub get_exit_status {
 	my ($self, $command, @args) = @_;
 	if( $^O eq 'MSWin32') {
-		return system( $command, @args );
+		return $self->system( $command, @args );
 	}
 	my ($wtr, $rdr, $err);
 	my $child_exit_status = 1;
 	eval {
+		$self->log("Using open3: $command @args");
 		my $pid = open3($wtr, $rdr, $err,
 			$command, @args);
 
@@ -257,10 +263,22 @@ sub install_self_contained_cpm {
 
 	$self->{cpm} = File::Spec->catfile( $self->{bin_dir}, qw(cpm) );
 
+	$self->log('Copying cpm from vendor-external');
 	copy( File::Spec->catfile($self->{vendor_external_dir}, qw(cpm cpm)),  $self->{cpm} ) or die "Could not copy cpm: $!";
 	chmod 0755, $self->{cpm};
-	#system( $^X, qw(-S), qw(pl2bat), $self->{cpm} ) if $^O eq 'MSWin32';
+	#$self->system( $^X, qw(-S), qw(pl2bat), $self->{cpm} ) if $^O eq 'MSWin32';
 	die "Could not install cpm: $!" unless $self->has_cpm;
+}
+
+sub log {
+	my ($self, $message) = @_;
+	say STDERR "Bootstrap: $message";
+}
+
+sub system {
+	my ($self, @args) = @_;
+	$self->log("Running command: @args");
+	return system(@args);
 }
 
 1;
