@@ -32,7 +32,7 @@ method system( $runnable ) {
 		interval => 60,
 
 		on_tick => sub {
-			print ".\n";
+			print STDERR ".\n";
 		},
 	)->start);
 
@@ -47,7 +47,7 @@ method system( $runnable ) {
 
 	my $exit;
 
-	say "Running command @{ $runnable->command }";
+	say STDERR "Running command @{ $runnable->command }";
 	$function->call(
 		args => [
 			$runnable->environment->environment_hash,
