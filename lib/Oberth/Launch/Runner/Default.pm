@@ -60,7 +60,10 @@ method system( $runnable ) {
 	$loop->loop_once while ! defined $exit;
 
 	$timer->stop;
-	$function->stop;
+	# Do not call on Windows because of an error message:
+	#     Free to wrong pool X not Y during global destruction.
+	# Possibly has to do with threads.
+	$function->stop if $^O ne 'MSWin32';
 	$loop->loop_stop;
 
 	if( $exit != 0 ) {
