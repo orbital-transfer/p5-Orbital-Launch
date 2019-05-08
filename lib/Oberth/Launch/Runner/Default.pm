@@ -11,6 +11,37 @@ use IO::Async::Loop;
 use IO::Async::Function;
 use IO::Async::Timer::Periodic;
 
+lazy loop => method() {
+	my $loop = IO::Async::Loop->new;
+
+	$loop->add( $self->system_function );
+
+	$loop->add( $self->timer );
+
+	$loop;
+};
+
+lazy system_function => method() {
+	my $function = IO::Async::Function->new(
+		code => sub {
+			my ( $env, $command ) = @_;
+
+			local %ENV = %{ $env };
+			my $exit = CORE::system( @{ $command } );
+		},
+	);
+};
+
+lazy timer => method() {
+	my $timer = IO::Async::Timer::Periodic->new(
+		interval => 60,
+
+		on_tick => sub {
+			print STDERR "SYSTEM KEEP-ALIVE.\n";
+		},
+	);
+};
+
 method system( $runnable ) {
 	if( $runnable->admin_privilege ) {
 		if( ! Sudo->is_admin_user ) {
@@ -26,29 +57,14 @@ method system( $runnable ) {
 		}
 	}
 
-	my $loop = IO::Async::Loop->new;
+	my $loop = $self->loop;
 
-	$loop->add(my $timer = IO::Async::Timer::Periodic->new(
-		interval => 60,
-
-		on_tick => sub {
-			print STDERR ".\n";
-		},
-	)->start);
-
-	$loop->add(my $function = IO::Async::Function->new(
-		code => sub {
-			my ( $env, $command ) = @_;
-
-			local %ENV = %{ $env };
-			my $exit = CORE::system( @{ $command } );
-		},
-	));
+	$self->timer->start;
 
 	my $exit;
 
 	say STDERR "Running command @{ $runnable->command }";
-	$function->call(
+	$self->system_function->call(
 		args => [
 			$runnable->environment->environment_hash,
 			$runnable->command,
@@ -59,12 +75,7 @@ method system( $runnable ) {
 
 	$loop->loop_once while ! defined $exit;
 
-	$timer->stop;
-	# Do not call on Windows because of an error message:
-	#     Free to wrong pool X not Y during global destruction.
-	# Possibly has to do with threads.
-	$function->stop if $^O ne 'MSWin32';
-	$loop->loop_stop;
+	$self->timer->stop;
 
 	if( $exit != 0 ) {
 		die "Command '@{ $runnable->command }' exited with $exit";
