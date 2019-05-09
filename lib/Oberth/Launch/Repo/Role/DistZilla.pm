@@ -8,6 +8,9 @@ use File::Which;
 use Module::Load;
 use File::Temp qw(tempdir);
 use File::chdir;
+use File::HomeDir;
+use Path::Tiny;
+use Module::Load;
 
 use Oberth::Manoeuvre::Common::Setup;
 use Oberth::Launch::System::Debian::Meson;
@@ -59,11 +62,11 @@ method install_perl_build( @dists ) {
 			@dists
 	);
 	} catch { };
-	$self->platform->author_perl->script('cpanm',
+	$self->cpanm( perl => $self->platform->author_perl, arguments => [
 		qw(-qn),
 		@{ $global ? [] : [ qw(-L), $self->config->build_tools_dir ] },
 		@dists
-	);
+	]);
 }
 
 method install_perl_deps( @dists ) {
@@ -75,23 +78,23 @@ method install_perl_deps( @dists ) {
 		@dists
 	);
 
-	$self->platform->build_perl->script(
-		qw(cpanm -qn),
+	$self->cpanm( perl => $self->platform->build_perl, arguments => [
+		qw(-qn),
 		$self->_install_perl_deps_cpanm_dir_arg,
 		@dists
-	);
+	]);
 	} catch { };
 
 	# Ignore modules that are installed already without checking CPAN for
 	# version: `--skip-satisfied` .
 	# This may need to be improved by looking for versions of modules that
 	# are installed via cpanfile-git instead of from CPAN.
-	$self->platform->build_perl->script(
-		qw(cpanm -qn),
+	$self->cpanm( perl => $self->platform->build_perl, arguments => [
+		qw(-qn),
 		qw(--skip-satisfied),
 		$self->_install_perl_deps_cpanm_dir_arg,
 		@dists
-	);
+	]);
 }
 
 method _install_dzil() {
@@ -176,12 +179,12 @@ method _dzil_build_in_dir() {
 method _install_dzil_build() {
 	$self->_dzil_build_in_dir;
 
-	$self->platform->build_perl->script(
-		'cpanm', qw(-qn),
+	$self->cpanm( perl => $self->platform->build_perl, arguments => [
+		qw(-qn),
 		qw(--installdeps),
 		$self->_install_perl_deps_cpanm_dir_arg,
 		$self->dzil_build_dir_relative
-	);
+	]);
 }
 
 method _dzil_has_plugin_test_podspelling() {
@@ -229,12 +232,12 @@ method setup_build() {
 method install() {
 	$self->_dzil_build_in_dir;
 
-	$self->platform->build_perl->script(
-		qw(cpanm --notest),
+	$self->cpanm( perl => $self->platform->build_perl, arguments => [
+		qw(--notest),
 		qw(--no-man-pages),
 		$self->_install_perl_deps_cpanm_dir_arg,
 		$self->dzil_build_dir_relative
-	);
+	]);
 }
 
 method run_test() {
@@ -246,13 +249,12 @@ method run_test() {
 		# Need to have at least Devel::Cover~1.31 for fix to
 		# "Devel::Cover hangs when used with Function::Parameters"
 		# GH#164 <https://github.com/pjcj/Devel--Cover/issues/164>.
-		$self->platform->build_perl->script(
-			qw(cpanm),
+		$self->cpanm( perl => $self->platform->build_perl, arguments => [
 			qw(--no-man-pages),
 			$self->_install_perl_deps_cpanm_dir_arg,
 			qw(--notest),
 			qw(Devel::Cover~1.31)
-		);
+		]);
 
 		$test_env->append_string(
 			'HARNESS_PERL_SWITCHES', " -MDevel::Cover"
@@ -260,26 +262,26 @@ method run_test() {
 
 
 		if( $self->config->oberth_coverage eq 'coveralls' ) {
-			$self->platform->build_perl->script(
-				qw(cpanm),
+			$self->cpanm( perl => $self->platform->build_perl, arguments => [
 				qw(--no-man-pages),
 				$self->_install_perl_deps_cpanm_dir_arg,
 				qw(--notest),
 				qw(Devel::Cover::Report::Coveralls)
-			);
+			]);
 		}
 	}
 
-	my $test_command = $self->platform->build_perl->script_command(
-		qw(cpanm),
-		qw(--no-man-pages),
-		$self->_install_perl_deps_cpanm_dir_arg,
-		qw(--verbose),
-		qw(--test-only),
-		$self->dzil_build_dir_relative
-	);
-	$test_command->environment->add_environment( $test_env );
-	$self->runner->system( $test_command );
+	$self->cpanm( perl => $self->platform->build_perl,
+		command_cb => sub {
+			shift->environment->add_environment( $test_env );
+		},
+		arguments => [
+			qw(--no-man-pages),
+			$self->_install_perl_deps_cpanm_dir_arg,
+			qw(--verbose),
+			qw(--test-only),
+			$self->dzil_build_dir_relative
+	]);
 
 	if( $self->config->has_oberth_coverage ) {
 		local $CWD = $self->dzil_build_dir;
@@ -293,6 +295,32 @@ method run_test() {
 			);
 		}
 	}
+}
+
+lazy cpanm_latest_build_log => method() {
+	my $homedir = $ENV{HOME}
+		|| File::HomeDir->my_home
+		|| join('', @ENV{qw(HOMEDRIVE HOMEPATH)}); # Win32
+
+	if ( $^O eq 'MSWin32' ) {
+		autoload "Win32";
+		$homedir = Win32::GetShortPathName($homedir);
+	}
+
+	return "$homedir/.cpanm/build.log";
+};
+
+method cpanm( :$perl, :$command_cb = sub {}, :$arguments = [] ) {
+	try {
+		my $command = $perl->script_command( qw(cpanm), @$arguments );
+		$command_cb->( $command );
+		$self->runner->system( $command );
+	} catch {
+		say STDERR "cpanm failed. Dumping build.log.\n";
+		say STDERR path( $self->cpanm_latest_build_log )->slurp_utf8;
+		say STDERR "End of build.log.\n";
+		die $_;
+	};
 }
 
 1;
