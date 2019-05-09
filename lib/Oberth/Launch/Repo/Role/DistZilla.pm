@@ -156,6 +156,10 @@ method _install_dzil_listdeps() {
 
 }
 
+method dzil_build_dir_relative() {
+	File::Spec->abs2rel( $self->dzil_build_dir );
+}
+
 lazy dzil_build_dir => method() {
 	File::Spec->catfile( $self->directory, qq(../build-dir) );
 };
@@ -176,7 +180,7 @@ method _install_dzil_build() {
 		'cpanm', qw(-qn),
 		qw(--installdeps),
 		$self->_install_perl_deps_cpanm_dir_arg,
-		$self->dzil_build_dir
+		$self->dzil_build_dir_relative
 	);
 }
 
@@ -229,7 +233,7 @@ method install() {
 		qw(cpanm --notest),
 		qw(--no-man-pages),
 		$self->_install_perl_deps_cpanm_dir_arg,
-		$self->dzil_build_dir
+		$self->dzil_build_dir_relative
 	);
 }
 
@@ -272,7 +276,7 @@ method run_test() {
 		$self->_install_perl_deps_cpanm_dir_arg,
 		qw(--verbose),
 		qw(--test-only),
-		$self->dzil_build_dir
+		$self->dzil_build_dir_relative
 	);
 	$test_command->environment->add_environment( $test_env );
 	$self->runner->system( $test_command );
