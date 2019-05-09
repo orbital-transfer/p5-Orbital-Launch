@@ -6,7 +6,6 @@ use Mu::Role;
 
 use File::Which;
 use Module::Load;
-use Capture::Tiny qw(capture);
 use File::Temp qw(tempdir);
 use File::chdir;
 
@@ -110,14 +109,14 @@ method _install_dzil() {
 method _get_dzil_authordeps() {
 	local $CWD = $self->directory;
 
-	my ($dzil_authordeps, $dzil_authordeps_stderr, $dzil_authordeps_exit) = capture {
-		try {
-			$self->platform->author_perl->script(
+	my ($dzil_authordeps, $dzil_authordeps_stderr, $dzil_authordeps_exit) = try {
+		$self->runner->capture(
+			$self->platform->author_perl->script_command(
 				qw(dzil authordeps)
 				# --missing
-			);
-		} catch {};
-	};
+			)
+		);
+	} catch {};
 
 	my @dzil_authordeps = split /\n/, $dzil_authordeps;
 }
@@ -131,12 +130,12 @@ method _install_dzil_authordeps() {
 
 method _get_dzil_listdeps() {
 	local $CWD = $self->directory;
-	my ($dzil_deps, $dzil_deps_stderr, $exit_listdeps) = capture {
-		$self->platform->author_perl->script(
+	my ($dzil_deps, $dzil_deps_stderr, $exit_listdeps) = $self->runner->capture(
+		$self->platform->author_perl->script_command(
 			qw(dzil listdeps)
 			# --missing
 		)
-	};
+	);
 	my @dzil_deps = grep {
 		$_ !~ /
 			^\W
