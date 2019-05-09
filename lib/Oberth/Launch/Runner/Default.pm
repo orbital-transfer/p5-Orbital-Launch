@@ -5,6 +5,7 @@ package Oberth::Launch::Runner::Default;
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
 use Capture::Tiny ();
+use File::chdir;
 use aliased 'Oberth::Launch::Runnable::Sudo';
 
 use IO::Async::Loop;
@@ -28,8 +29,10 @@ lazy system_function => method() {
 };
 
 sub _system_with_env {
-	my ( $env, $command ) = @_;
+	my ( $env, $command, $pwd ) = @_;
 
+	use File::chdir;
+	local $CWD = $pwd;
 	local %ENV = %{ $env };
 	my $exit = CORE::system( @{ $command } );
 }
@@ -38,6 +41,7 @@ method _system_with_env_args( $runnable ) {
 	return (
 		$runnable->environment->environment_hash,
 		$runnable->command,
+		$CWD,
 	);
 }
 
