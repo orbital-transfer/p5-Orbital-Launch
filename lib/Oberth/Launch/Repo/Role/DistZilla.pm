@@ -158,15 +158,20 @@ method _install_dzil_listdeps() {
 }
 
 lazy dzil_build_dir => method() {
-	qq(../build-dir);
+	File::Spec->catfile( $self->directory, qq(../build-dir) );
 };
 
-method _install_dzil_build() {
+method _dzil_build_in_dir() {
 	local $CWD = $self->directory;
 
+	say STDERR "Building dzil for @{[ $self->directory ]}";
 	$self->platform->author_perl->script(
-		'dzil', qw(build --in), $self->dzil_build_dir
+		qw(dzil build --in), $self->dzil_build_dir
 	);
+}
+
+method _install_dzil_build() {
+	$self->_dzil_build_in_dir;
 
 	$self->platform->build_perl->script(
 		'cpanm', qw(-qn),
@@ -219,11 +224,7 @@ method setup_build() {
 }
 
 method install() {
-	local $CWD = $self->directory;
-
-	$self->platform->author_perl->script(
-		qw(dzil build --in), $self->dzil_build_dir
-	);
+	$self->_dzil_build_in_dir;
 
 	$self->platform->build_perl->script(
 		qw(cpanm --notest),
@@ -235,11 +236,8 @@ method install() {
 
 method run_test() {
 	my $test_env = $self->test_environment;
-	local $CWD = $self->directory;
 
-	$self->platform->author_perl->script(
-		qw(dzil build --in), $self->dzil_build_dir
-	);
+	$self->_dzil_build_in_dir;
 
 	if( $self->config->has_oberth_coverage ) {
 		# Need to have at least Devel::Cover~1.31 for fix to
