@@ -67,12 +67,12 @@ method _to_sudo($runnable) {
 	return $runnable;
 }
 
-method system_sync( $runnable ) {
+method system_sync( $runnable, :$log = 1 ) {
 	$runnable = $self->_to_sudo( $runnable );
 
 	my $exit;
 
-	say STDERR "Running command @{ $runnable->command }";
+	say STDERR "Running command @{ $runnable->command }" if $log;
 	$exit = _system_with_env( $self->_system_with_env_args(
 		$runnable
 	));
@@ -112,9 +112,10 @@ method system( $runnable ) {
 }
 
 method capture( $runnable ) {
+	say STDERR "Running command @{ $runnable->command }";
 	Capture::Tiny::capture(sub {
-		$self->system_sync( $runnable );
-	})
+		$self->system_sync( $runnable, log => 0 );
+	});
 }
 
 1;

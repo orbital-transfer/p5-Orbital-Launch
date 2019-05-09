@@ -125,6 +125,7 @@ method install_recursively($repo, :$main = 0, :$native = 0) {
 		$self->install_recursively( $dep, native => $native  );
 	}
 	if( !$main ) {
+		say STDERR "Installing @{[ $repo->directory ]}";
 		$self->install_repo($repo, native => $native );
 	}
 }
@@ -140,6 +141,7 @@ method install_repo($repo, :$native = 0 ) {
 		$repo->setup_build;
 		$exit = $repo->install;
 
+		say STDERR "Installed @{[ $repo->directory ]}";
 		$repo->directory->child('installed')->touch;
 	}
 
