@@ -63,7 +63,8 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 		return;
 	};
 
-	do $0 or die "Hack failed: $@";
+	my $exit = eval { do $0 };
+	warn "Hack failed: (exit: $exit) $@" if $@ || $exit;
 
 	# we can exit now that we are done
 	exit 0;
