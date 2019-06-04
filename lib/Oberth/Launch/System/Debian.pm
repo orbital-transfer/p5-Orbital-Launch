@@ -59,7 +59,10 @@ method install_packages($repo) {
 	) if @packages;
 
 	if( grep { $_->name eq 'meson' } @packages ) {
-		Oberth::Launch::System::Debian::Meson->setup;
+		my $meson = Oberth::Launch::System::Debian::Meson->new(
+			runner => $self->runner
+		);
+		$meson->setup;
 	}
 }
 
