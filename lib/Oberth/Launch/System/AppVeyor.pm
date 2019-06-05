@@ -121,6 +121,23 @@ method _install() {
 		)
 	);
 
+	# Workaround GCC9 update issues:
+	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
+	# <https://github.com/msys2/MINGW-packages/commit/0c60660b0cbb485fa29ea09a229cb368e2d01bae>.
+	# and broken dependencies issue in <https://github.com/msys2/MINGW-packages/issues/5434>.
+	try {
+		my @gcc9_remove = qw(
+			mingw-w64-i686-gcc-ada   mingw-w64-i686-gcc-objc
+			mingw-w64-x86_64-gcc-ada mingw-w64-x86_64-gcc-objc
+		);
+		$self->runner->system(
+			Runnable->new(
+				command => [ qw(pacman -R --noconfirm), @gcc9_remove ],
+				environment => $self->environment,
+			)
+		);
+	} catch { };
+
 	# build tools
 	$self->pacman(qw(mingw-w64-x86_64-make mingw-w64-x86_64-toolchain autoconf automake libtool make patch mingw-w64-x86_64-libtool));
 
