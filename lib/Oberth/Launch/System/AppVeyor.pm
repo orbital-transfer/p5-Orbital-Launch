@@ -119,7 +119,7 @@ method _install() {
 			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
 			environment => $self->environment,
 		)
-	) for (0..2);
+	);
 
 	# Workaround GCC9 update issues:
 	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
@@ -137,6 +137,14 @@ method _install() {
 			)
 		);
 	} catch { };
+
+	# Update again
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
+			environment => $self->environment,
+		)
+	);
 
 	# build tools
 	$self->pacman(qw(mingw-w64-x86_64-make mingw-w64-x86_64-toolchain autoconf automake libtool make patch mingw-w64-x86_64-libtool));
