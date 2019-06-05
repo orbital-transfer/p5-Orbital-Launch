@@ -232,12 +232,17 @@ method setup_build() {
 method install() {
 	$self->_dzil_build_in_dir;
 
-	$self->cpanm( perl => $self->platform->build_perl, arguments => [
-		qw(--notest),
-		qw(--no-man-pages),
-		$self->_install_perl_deps_cpanm_dir_arg,
-		$self->dzil_build_dir_relative
-	]);
+	$self->cpanm( perl => $self->platform->build_perl,
+		command_cb => sub {
+			shift->environment->add_environment( $self->environment );
+		},
+		arguments => [
+			qw(--notest),
+			qw(--no-man-pages),
+			$self->_install_perl_deps_cpanm_dir_arg,
+			$self->dzil_build_dir_relative
+		],
+	);
 }
 
 method run_test() {
