@@ -40,7 +40,7 @@ method setup() {
 			)
 		) for(
 			[ qw(apt-get install -y --no-install-recommends python3-pip) ],
-			[ qw(pip3 install --user -U setuptools) ],
+			[ qw(pip3 install --user -U setuptools wheel) ],
 			[ qw(pip3 install --user -U meson) ],
 		);
 	}

@@ -27,7 +27,7 @@ lazy environment => method() {
 		my $meson = Oberth::Launch::System::Debian::Meson->new(
 			runner => $self->runner
 		);
-		push @{ $env->_commands }, @{ $meson->environment->_commands };
+		$env->add_environment( $meson->environment );
 	}
 
 	$env;
