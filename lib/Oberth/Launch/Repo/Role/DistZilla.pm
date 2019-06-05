@@ -25,7 +25,8 @@ lazy environment => method() {
 	my @packages = @{ $self->debian_get_packages };
 	if( grep { $_ eq 'meson' } @packages ) {
 		my $meson = Oberth::Launch::System::Debian::Meson->new(
-			runner => $self->runner
+			runner => $self->runner,
+			platform => $self->platform,
 		);
 		$env->add_environment( $meson->environment );
 	}
