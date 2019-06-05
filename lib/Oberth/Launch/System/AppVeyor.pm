@@ -119,7 +119,7 @@ method _install() {
 			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
 			environment => $self->environment,
 		)
-	);
+	) for (0..2);
 
 	# Workaround GCC9 update issues:
 	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
