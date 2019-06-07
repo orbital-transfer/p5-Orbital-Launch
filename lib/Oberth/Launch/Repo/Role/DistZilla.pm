@@ -148,6 +148,7 @@ method _get_dzil_listdeps() {
 			| ^BEGIN\ failed--compilation\ aborted
 			| ^Can't\ locate.*in\ \@INC
 			| ^Compilation\ failed\ in\ require
+			| ^Could\ not\ find\ sub\ .*\ exported\ by
 		/x
 	} split /\n/, $dzil_deps;
 }
