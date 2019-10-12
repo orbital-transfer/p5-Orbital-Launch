@@ -11,18 +11,18 @@ use Env qw($OBERTH_GLOBAL_INSTALL $OBERTH_COVERAGE);
 
 has build_tools_dir => (
 	is => 'ro',
-	default => sub { path('../author-local')->absolute },
+	default => sub { path('../_oberth/author-local')->absolute },
 );
 
 has lib_dir => (
 	is => 'ro',
-	default => sub { path('../local')->absolute },
+	default => sub { path('../_oberth/local')->absolute },
 );
 
 has external_dir => (
 	is => 'ro',
 	default => sub {
-		File::Spec->catfile( '..', qw(external) );
+		File::Spec->catfile( '..', qw(_oberth external) );
 	},
 );
 

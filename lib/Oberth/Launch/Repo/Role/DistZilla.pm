@@ -172,7 +172,7 @@ method dzil_build_dir_relative() {
 }
 
 lazy dzil_build_dir => method() {
-	File::Spec->catfile( $self->directory, qq(../build-dir) );
+	File::Spec->catfile( $self->directory, qq(../_oberth/build-dir) );
 };
 
 method _dzil_build_in_dir() {
