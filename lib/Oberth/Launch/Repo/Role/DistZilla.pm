@@ -10,7 +10,7 @@ use File::Temp qw(tempdir);
 use File::chdir;
 use File::HomeDir;
 use Path::Tiny;
-use Module::Load;
+use Module::Reader;
 
 use Oberth::Manoeuvre::Common::Setup;
 use Oberth::Launch::System::Debian::Meson;
@@ -122,7 +122,13 @@ method _get_dzil_authordeps() {
 		);
 	} catch {};
 
-	my @dzil_authordeps = split /\n/, $dzil_authordeps;
+	my $reader = my $other_reader = Module::Reader->new( inc => [
+		'.',
+		@{ $self->platform->author_perl->library_paths }
+	]);
+	my @dzil_authordeps =
+		grep { ! ( try { $reader->module($_) } catch { 0 } ) }
+		split /\n/, $dzil_authordeps;
 }
 
 method _install_dzil_authordeps() {
