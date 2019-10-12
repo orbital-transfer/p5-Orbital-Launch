@@ -9,14 +9,33 @@ use Path::Tiny;
 use FindBin;
 use Env qw($OBERTH_GLOBAL_INSTALL $OBERTH_COVERAGE);
 
+has base_dir => (
+	is => 'ro',
+	default => sub {
+		my $p = path('..')->absolute;
+		$p->mkpath;
+		$p->realpath;
+	},
+);
+
 has build_tools_dir => (
 	is => 'ro',
-	default => sub { path('../_oberth/author-local')->absolute },
+	default => sub {
+		my ($self) = @_;
+		my $p = $self->base_dir->child('_oberth/author-local');
+		$p->mkpath;
+		$p->realpath;
+	},
 );
 
 has lib_dir => (
 	is => 'ro',
-	default => sub { path('../_oberth/local')->absolute },
+	default => sub {
+		my ($self) = @_;
+		my $p = $self->base_dir->child('local');
+		$p->mkpath;
+		$p->realpath;
+	},
 );
 
 has external_dir => (
