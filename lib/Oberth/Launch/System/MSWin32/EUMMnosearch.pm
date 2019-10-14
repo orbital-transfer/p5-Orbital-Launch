@@ -9,6 +9,14 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 	require ExtUtils::MakeMaker;
 	require ExtUtils::Liblist::Kid;
 
+	open(my $f, '<', $0) or die "OPENING $0 $!\n";
+	my $makefile_contents = do { local($/); <$f> };
+	close($f);
+	if( $makefile_contents =~ /^use XS::Install/m ) {
+		my $exit = eval { do $0 };
+		exit 0;
+	}
+
 	my $i = ExtUtils::MakeMaker->can("import");
 	no warnings "redefine";
 	no warnings "once";
