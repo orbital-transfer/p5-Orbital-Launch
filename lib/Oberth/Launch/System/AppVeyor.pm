@@ -165,6 +165,7 @@ method _install() {
 
 method _install_perl() {
 	$self->pacman(qw(mingw-w64-x86_64-perl));
+	$self->pacman(qw(mingw-w64-x86_64-wget)); # needed for cpanm
 	$self->build_perl->script( 'pl2bat', $self->build_perl->which_script('pl2bat') );
 	{
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
