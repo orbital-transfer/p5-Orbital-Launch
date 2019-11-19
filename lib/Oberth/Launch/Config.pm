@@ -41,7 +41,10 @@ has lib_dir => (
 has external_dir => (
 	is => 'ro',
 	default => sub {
-		File::Spec->catfile( '..', qw(_oberth external) );
+		my ($self) = @_;
+		my $p = $self->base_dir->child(qw(_oberth external));
+		$p->mkpath;
+		$p->realpath;
 	},
 );
 
