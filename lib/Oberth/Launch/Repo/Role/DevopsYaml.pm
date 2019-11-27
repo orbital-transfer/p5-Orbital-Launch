@@ -42,5 +42,13 @@ method msys2_mingw64_get_packages() {
 	return $data;
 }
 
+method chocolatey_get_packages() {
+	my $data = [];
+	if( -r $self->devops_config_path ) {
+		push @$data, @{ $self->devops_data->{native}{'chocolatey'}{packages} || [] };
+	}
+
+	return $data;
+}
 
 1;

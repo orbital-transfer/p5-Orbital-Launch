@@ -192,10 +192,22 @@ method pacman(@packages) {
 	);
 }
 
+method choco(@packages) {
+	return unless @packages;
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(choco install), @packages ],
+			environment => $self->environment,
+		)
+	);
+}
+
 method install_packages($repo) {
-	my @packages = @{ $repo->msys2_mingw64_get_packages };
+	my @mingw_packages = @{ $repo->msys2_mingw64_get_packages };
+	my @choco_packages = @{ $repo->chocolatey_get_packages };
 	say STDERR "Installing repo native deps";
-	$self->pacman(@packages);
+	$self->pacman(@mingw_packages);
+	$self->choco(@choco_packages);
 }
 
 with qw(
