@@ -294,6 +294,7 @@ method run_test() {
 			$self->_install_perl_deps_cpanm_dir_arg,
 			qw(--verbose),
 			qw(--test-only),
+			qw(--test-args), 'TEST_VERBOSE=1',
 			$self->dzil_build_dir_relative
 	]);
 
