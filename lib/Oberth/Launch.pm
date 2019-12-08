@@ -35,6 +35,7 @@ use CLI::Osprey;
 use ShellQuote::Any;
 use File::Path qw(make_path);
 use File::Which;
+use Safe::Isa;
 
 use Oberth::Manoeuvre::Common::Setup;
 
@@ -193,6 +194,7 @@ method clone_git($url, $branch = 'master') {
 			$url,
 			$path) == 0
 		or die "Could not clone $url @ $branch";
+		$self->platform->$_call_if_can( process_git_path => $path );
 	}
 
 	return $path;

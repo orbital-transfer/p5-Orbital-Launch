@@ -5,6 +5,7 @@ package Oberth::Launch::System::Debian;
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
 use Oberth::Launch::System::Debian::Meson;
+use Oberth::Launch::System::Docker;
 
 use Oberth::Launch::PackageManager::APT;
 use Oberth::Launch::RepoPackage::APT;
@@ -41,6 +42,12 @@ method _pre_run() {
 }
 
 method _install() {
+	if( Oberth::Launch::System::Docker->is_inside_docker ) {
+		# create a non-root user
+		say STDERR "Creating user nonroot (this should only occur inside Docker)";
+		system(qw(useradd -m notroot));
+		system(qw(chown -R notroot:notroot /build));
+	}
 	my @packages = map {
 		Oberth::Launch::RepoPackage::APT->new( name => $_ )
 	} qw(xvfb xauth);
@@ -63,7 +70,14 @@ method install_packages($repo) {
 			runner => $self->runner,
 			platform => $self,
 		);
+		$meson->install_pip3_apt($self->apt);
 		$meson->setup;
+	}
+}
+
+method process_git_path($path) {
+	if( Oberth::Launch::System::Docker->is_inside_docker ) {
+		system(qw(chown -R notroot:notroot), $path);
 	}
 }
 
