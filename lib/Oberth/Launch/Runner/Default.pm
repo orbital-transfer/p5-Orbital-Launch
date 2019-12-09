@@ -48,7 +48,8 @@ sub _system_with_env {
 
 method _system_with_env_args( $runnable ) {
 	my $env = $runnable->environment->environment_hash;
-	my $user_args = { user => $> , group => $) };
+	my $user_args = { user => $> , group => (split(' ', $) ))[0] };
+
 	if( ! $runnable->admin_privilege && Oberth::Launch::System::Docker->is_inside_docker ) {
 		# become a non-root user
 		$user_args->{group} = '1000';
