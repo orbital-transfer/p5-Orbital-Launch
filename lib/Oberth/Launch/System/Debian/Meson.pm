@@ -50,11 +50,18 @@ method setup() {
 				environment => $self->environment,
 			)
 		) for(
-			[ qw(apt-get install -y --no-install-recommends python3-pip) ],
 			[ qw(pip3 install --user -U setuptools wheel) ],
 			[ qw(pip3 install --user -U meson) ],
 		);
 	}
+}
+
+method install_pip3_apt( $apt ) {
+	$self->runner->system(
+		$apt->install_packages_command(
+			Oberth::Launch::RepoPackage::APT->new( name => 'python3-pip' )
+		)
+	);
 }
 
 1;

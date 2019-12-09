@@ -12,6 +12,8 @@ use IO::Async::Loop;
 use IO::Async::Function;
 use IO::Async::Timer::Periodic;
 
+use Oberth::Launch::System::Docker;
+
 lazy loop => method() {
 	my $loop = IO::Async::Loop->new;
 
@@ -29,19 +31,36 @@ lazy system_function => method() {
 };
 
 sub _system_with_env {
-	my ( $env, $command, $pwd ) = @_;
+	my ( $env, $command, $pwd, $user_args ) = @_;
 
 	use File::chdir;
 	local $CWD = $pwd;
 	local %ENV = %{ $env };
+
+	local $( = $user_args->{group};
+	local $) = $(;
+
+	local $< = $user_args->{user};
+	local $> = $<;
+
 	my $exit = CORE::system( @{ $command } );
 }
 
 method _system_with_env_args( $runnable ) {
+	my $env = $runnable->environment->environment_hash;
+	my $user_args = { user => $> , group => (split(' ', $) ))[0] };
+
+	if( ! $runnable->admin_privilege && Oberth::Launch::System::Docker->is_inside_docker ) {
+		# become a non-root user
+		$user_args->{group} = '1000';
+		$user_args->{user} = 1000;
+		$env->{HOME} = '/home/notroot';
+	}
 	return (
-		$runnable->environment->environment_hash,
+		$env,
 		$runnable->command,
 		$CWD,
+		$user_args,
 	);
 }
 
