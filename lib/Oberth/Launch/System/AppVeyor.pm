@@ -196,7 +196,7 @@ method choco(@packages) {
 	return unless @packages;
 	$self->runner->system(
 		Runnable->new(
-			command => [ qw(choco install), @packages ],
+			command => [ qw(choco install -y), @packages ],
 			environment => $self->environment,
 		)
 	);
