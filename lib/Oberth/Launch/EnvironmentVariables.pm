@@ -61,9 +61,16 @@ method set_string( (Str) $variable, (Str) $string = '' ) {
 
 method add_environment( (InstanceOf['Oberth::Launch::EnvironmentVariables']) $env_vars) {
 	$self->_add_command( undef, $env_vars, fun( $env, $hash ) {
-		$self->_run_commands( $env_vars->_commands, $hash );
+		$self->_add_environment( $env_vars, $hash );
 	});
 };
+
+method _add_environment( $env_vars, $hash ) {
+	if( $env_vars->has_parent ) {
+		$self->_add_environment($env_vars->parent, $hash);
+	}
+	$self->_run_commands( $env_vars->_commands, $hash );
+}
 
 method _run_commands( $commands, $env ) {
 	for my $command ( @$commands ) {
