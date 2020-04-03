@@ -46,6 +46,9 @@ Vagrant.configure(2) do |config|
 	'osx-sierra-10.12'   => {
 			vnc_port: 5909,
 			box: 'AndrewDryga/vagrant-box-osx-sierra' },
+	'osx-catalina-10.15'   => {
+			vnc_port: 5910,
+			box: 'macOS-catalina' },
 }.each	do |name, data|
 	config.vm.define name, autostart: false do |osx|
 		osx.vm.box = data[:box]
