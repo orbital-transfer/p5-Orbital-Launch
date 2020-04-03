@@ -2,6 +2,8 @@
 eval %x(oberth-cli launch vagrant helper)
 
 def add_synced_folders( config, options = {} )
+	config.vm.synced_folder ".", "/vagrant", disabled: true
+
 	directories = %x(oberth-cli launch vagrant project-directories --gitgot-tag  #{@tag}).split "\0"
 	add_synced_folders_helper( config, directories, 'build', options )
 
