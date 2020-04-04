@@ -48,6 +48,13 @@ method _install() {
 		)
 	);
 
+	# Remove old Python package
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(brew unlink python@2) ]
+		)
+	);
+
 	# Set up for X11 support
 	say STDERR "Installing xquartz homebrew cask for X11 support";
 	$self->runner->system(
