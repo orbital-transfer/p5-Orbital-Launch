@@ -136,9 +136,30 @@ method system( $runnable ) {
 
 method capture( $runnable ) {
 	say STDERR "Running command @{ $runnable->command }";
-	Capture::Tiny::capture(sub {
-		$self->system_sync( $runnable, log => 0 );
+	my $died = 0;
+	my $error;
+	my @output = Capture::Tiny::capture(sub {
+		try {
+			$self->system_sync( $runnable, log => 0 );
+		} catch {
+			$died = 1;
+			$error = $_;
+		};
 	});
+	if( $died ) {
+		my $stdout = shift @output;
+		my $stderr = shift @output;
+		die <<EOF;
+$error
+
+STDOUT:\n==\n$stdout\n==\n
+STDERR:\n==\n$stderr\n==\n
+
+@output
+EOF
+	}
+
+	wantarray ? @output : $output[0];
 }
 
 1;

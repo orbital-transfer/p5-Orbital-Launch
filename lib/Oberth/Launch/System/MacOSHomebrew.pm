@@ -10,19 +10,26 @@ use Oberth::Launch::EnvironmentVariables;
 use Oberth::Launch::Runner::Default;
 use aliased 'Oberth::Launch::Runnable';
 
+lazy homebrew_prefix => method() {
+	path("/usr/local");
+};
+
 lazy environment => method() {
 	my $env = Oberth::Launch::EnvironmentVariables
 		->new;
 
+	# Set up Homebrew bin path
+	$env->prepend_path_list( 'PATH', [ $self->homebrew_prefix->child('bin')->stringify ]  );
+
 	# Set up for OpenSSL (linking and utilities)
-	$env->prepend_path_list( 'PKG_CONFIG_PATH', [ '/usr/local/opt/openssl/lib/pkgconfig' ]  );
-	$env->prepend_path_list( 'PATH', [ '/usr/local/opt/openssl/bin' ]  );
+	$env->prepend_path_list( 'PKG_CONFIG_PATH', [ $self->homebrew_prefix->child('opt/openssl/lib/pkgconfig')->stringify ]  );
+	$env->prepend_path_list( 'PATH', [ $self->homebrew_prefix->child('opt/openssl/bin')->stringify ]  );
 
 	# Set up for libffi linking
-	$env->prepend_path_list( 'PKG_CONFIG_PATH', [ '/usr/local/opt/libffi/lib/pkgconfig' ]  );
+	$env->prepend_path_list( 'PKG_CONFIG_PATH', [ $self->homebrew_prefix->child('opt/libffi/lib/pkgconfig')->stringify ]  );
 
 	# Add Homebrew gettext utilities to path
-	$env->prepend_path_list( 'PATH', [ '/usr/local/opt/gettext/bin' ]  );
+	$env->prepend_path_list( 'PATH', [ $self->homebrew_prefix->child('opt/gettext/bin')->stringify ]  );
 
 	$env->set_string('ARCHFLAGS', '-arch x86_64' );
 
@@ -38,6 +45,13 @@ method _install() {
 	$self->runner->system(
 		Runnable->new(
 			command => [ qw(brew update) ]
+		)
+	);
+
+	# Remove old Python package
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(brew unlink python@2) ]
 		)
 	);
 
