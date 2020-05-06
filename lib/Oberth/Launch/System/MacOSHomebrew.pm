@@ -5,6 +5,7 @@ package Oberth::Launch::System::MacOSHomebrew;
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
 use IPC::System::Simple ();
+use Object::Util;
 
 use Oberth::Launch::EnvironmentVariables;
 use Oberth::Launch::Runner::Default;
@@ -42,14 +43,14 @@ method _pre_run() {
 
 method _install() {
 	say STDERR "Updating homebrew";
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(brew update) ]
 		)
 	);
 
 	# Remove old Python package
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(brew unlink python@2) ]
 		)
@@ -57,7 +58,7 @@ method _install() {
 
 	# Set up for X11 support
 	say STDERR "Installing xquartz homebrew cask for X11 support";
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => $_
 		)
@@ -67,14 +68,14 @@ method _install() {
 	);
 
 	# Set up for pkg-config
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(brew install pkg-config) ]
 		)
 	);
 
 	# Set up for OpenSSL (linking and utilities)
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(brew install openssl) ]
 		)
