@@ -134,7 +134,7 @@ def configure_windows(win10, name)
 	win10.ssh.insert_key = true
 
 	win10.vm.provision "Install Chocolatey", type: "local_shell", command: <<~SHELL
-		sshpass -p 'Passw0rd!' vagrant ssh #{name} -- "PowerShell -Command 'Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex'"
+		sshpass -p 'Passw0rd!' vagrant ssh #{name} -- "PowerShell -Command 'Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = \\"tls12, tls11, tls\\"; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex'"
 		sshpass -p 'Passw0rd!' vagrant ssh #{name} -- 'export PATH="$PATH:/cygdrive/c/ProgramData/chocolatey/bin"; choco install -y --allowemptychecksum sysinternals'
 		sshpass -p 'Passw0rd!' vagrant ssh #{name} -- 'export PATH="$PATH:/cygdrive/c/ProgramData/chocolatey/bin"; choco install -y --allowemptychecksum strawberryperl'
 		sshpass -p 'Passw0rd!' vagrant ssh #{name} -- 'export PATH="$PATH:/cygdrive/c/ProgramData/chocolatey/bin"; choco install -y --allowemptychecksum git'
