@@ -4,6 +4,7 @@ package Oberth::Launch::System::AppVeyor;
 
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
+use Object::Util;
 
 use Oberth::Launch::EnvironmentVariables;
 use aliased 'Oberth::Launch::Runnable';
@@ -114,7 +115,7 @@ method _install() {
 	# than selecting yes.
 
 	# Update
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
 			environment => $self->environment,
@@ -139,7 +140,7 @@ method _install() {
 	} catch { };
 
 	# Update again
-	$self->runner->system(
+	$self->runner->$_try( system =>
 		Runnable->new(
 			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
 			environment => $self->environment,

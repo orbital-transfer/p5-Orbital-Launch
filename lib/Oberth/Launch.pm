@@ -112,7 +112,11 @@ method test() {
 }
 
 method run() {
-	$self->install;
+	try {
+		$self->install;
+	} catch {
+		warn "Install failed: $_";
+	};
 }
 
 subcommand 'test' => method() {
