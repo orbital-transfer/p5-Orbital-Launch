@@ -54,19 +54,21 @@ method _install_perl_deps_cpanm_dir_arg() {
 	@{ $global ? [] : [ qw(-L), $self->config->lib_dir ] };
 }
 
-method install_perl_build( @dists ) {
+method install_perl_build( :$dists = [], :$verbose = 0 ) {
 	my $global = $self->config->cpan_global_install;
 	try {
 	$self->platform->author_perl->script('cpm',
 			qw(install),
+			@{ $verbose ? [ qw(-v) ] : [] },
 			@{ $global ? [ qw(-g) ] : [ qw(-L), $self->config->build_tools_dir ] },
-			@dists
+			@$dists
 	);
 	} catch { };
 	$self->cpanm( perl => $self->platform->author_perl, arguments => [
 		qw(-qn),
+		@{ $verbose ? [ qw(-v) ] : [] },
 		@{ $global ? [] : [ qw(-L), $self->config->build_tools_dir ] },
-		@dists
+		@$dists
 	]);
 }
 
@@ -106,7 +108,7 @@ method _install_dzil() {
 			)
 		);
 	} catch {
-		$self->install_perl_build(qw(Net::SSLeay Dist::Zilla));
+		$self->install_perl_build(dists => [ qw(Net::SSLeay Dist::Zilla) ]);
 	};
 }
 
@@ -134,7 +136,7 @@ method _get_dzil_authordeps() {
 method _install_dzil_authordeps() {
 	my @dzil_authordeps = $self->_get_dzil_authordeps;
 	if( @dzil_authordeps ) {
-		$self->install_perl_build( @dzil_authordeps );
+		$self->install_perl_build( dists => \@dzil_authordeps );
 	}
 }
 
