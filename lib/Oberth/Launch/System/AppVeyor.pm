@@ -113,14 +113,13 @@ method _install() {
 	#
 	# is displayed when trying to update followed by an exit rather
 	# than selecting yes.
+	my $update_runnable = Runnable->new(
+		command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
+		environment => $self->environment,
+	);
 
 	# Update
-	$self->runner->$_try( system =>
-		Runnable->new(
-			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
-			environment => $self->environment,
-		)
-	);
+	$self->runner->$_try( system => $update_runnable );
 
 	# Workaround GCC9 update issues:
 	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
@@ -140,12 +139,7 @@ method _install() {
 	} catch { };
 
 	# Update again
-	$self->runner->$_try( system =>
-		Runnable->new(
-			command => [ qw(pacman -Syu --ask 20 --noconfirm) ],
-			environment => $self->environment,
-		)
-	);
+	$self->runner->$_try( system => $update_runnable );
 
 	# build tools
 	$self->pacman(qw(mingw-w64-x86_64-make mingw-w64-x86_64-toolchain autoconf automake libtool make patch mingw-w64-x86_64-libtool));
