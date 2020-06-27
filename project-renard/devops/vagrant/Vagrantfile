@@ -103,4 +103,11 @@ end
 		configure_windows(win10, 'win10')
 	end
 
+	config.vm.define :win10_StefanScherer, autostart: false do |win10|
+		# sudo gem install winrm winrm-elevated
+		config.vm.box = "StefanScherer/windows_10"
+		#add_synced_folders( win10 )
+		configure_windows(win10, 'win10_StefanScherer')
+	end
+
 end
