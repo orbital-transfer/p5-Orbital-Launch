@@ -60,6 +60,9 @@ method get_info( $path ) {
 		);
 	}
 
+	my ($gitgot_for_path) = grep { $_->repo_path eq $info->{path} } @{ $self->finder->gitgot->data };
+	$info->{gitgot}{tags} = $gitgot_for_path->repo_tags;
+
 	$self->_info_cache->{$path} = $info;
 }
 
