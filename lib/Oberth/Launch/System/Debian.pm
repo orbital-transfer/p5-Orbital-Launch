@@ -11,7 +11,7 @@ use Oberth::Launch::PackageManager::APT;
 use Oberth::Launch::RepoPackage::APT;
 
 use Oberth::Launch::EnvironmentVariables;
-use Object::Util;
+use Object::Util magic => 0;
 
 lazy apt => method() {
 	Oberth::Launch::PackageManager::APT->new(

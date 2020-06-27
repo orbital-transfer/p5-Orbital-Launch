@@ -9,7 +9,7 @@ use File::Spec;
 use Oberth::Launch::Environment::Perl;
 
 use Oberth::Launch::EnvironmentVariables;
-use Object::Util;
+use Object::Util magic => 0;
 
 requires 'environment';
 requires 'perl_path';

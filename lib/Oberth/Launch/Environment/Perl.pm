@@ -8,7 +8,7 @@ use Oberth::Manoeuvre::Common::Types qw(AbsFile ArrayRef Path);
 use aliased 'Oberth::Launch::Runnable';
 use Config;
 use Oberth::Launch::EnvironmentVariables;
-use Object::Util;
+use Object::Util magic => 0;
 use File::Which;
 
 has parent_environment => (

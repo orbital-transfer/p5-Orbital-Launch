@@ -2,7 +2,7 @@
 
 use Test::Most tests => 3;
 use Modern::Perl;
-use Object::Util;
+use Object::Util magic => 0;
 
 use Oberth::Launch::EnvironmentVariables;
 use Config;

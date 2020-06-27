@@ -5,7 +5,7 @@ package Oberth::Launch::System::MacOSHomebrew;
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
 use IPC::System::Simple ();
-use Object::Util;
+use Object::Util magic => 0;
 
 use Oberth::Launch::EnvironmentVariables;
 use Oberth::Launch::Runner::Default;

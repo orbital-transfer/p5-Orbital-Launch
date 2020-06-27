@@ -6,7 +6,7 @@ use Mu;
 use Oberth::Manoeuvre::Common::Setup;
 use Oberth::Launch::EnvironmentVariables;
 use aliased 'Oberth::Launch::Runnable';
-use Object::Util;
+use Object::Util magic => 0;
 
 has platform => (
 	is => 'ro',
