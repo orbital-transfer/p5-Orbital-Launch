@@ -157,6 +157,7 @@ method _get_dzil_listdeps() {
 			| ^Can't\ locate.*in\ \@INC
 			| ^Compilation\ failed\ in\ require
 			| ^Could\ not\ find\ sub\ .*\ exported\ by
+			| ^Can't\ load\ '.*'\ for\ module
 		/x
 	} split /\n/, $dzil_deps;
 }
