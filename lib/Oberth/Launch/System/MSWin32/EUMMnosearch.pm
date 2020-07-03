@@ -12,9 +12,10 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 	open(my $f, '<', $0) or die "OPENING $0 $!\n";
 	my $makefile_contents = do { local($/); <$f> };
 	close($f);
+
+	my $eumm_targ = "main";
 	if( $makefile_contents =~ /^use XS::Install/m ) {
-		my $exit = eval { do $0 };
-		exit 0;
+		$eumm_targ = 'XS::Install';
 	}
 
 	my $i = ExtUtils::MakeMaker->can("import");
@@ -23,8 +24,10 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 	*ExtUtils::MakeMaker::import = sub {
 		&$i;
 		#my $targ = caller;
-		my $targ = "main";
-		my $wm = $targ->can("WriteMakefile");
+		my $targ = $eumm_targ;
+		#my $wm = $targ->can("WriteMakefile");
+		my $wm = ExtUtils::MakeMaker->can("WriteMakefile");
+		print "$targ\n";
 		no strict "refs"; ## no critic: 'RequireUseStrict'
 		*{"${targ}::WriteMakefile"} = sub {
 			my %args = @_;
@@ -36,6 +39,9 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 			# The pattern needs to be case-insensitive because
 			# Windows is case-insensitive.
 			chomp(my $lib_path = `cygpath -m /mingw64/lib`);
+			if( $args{LIBS} && ref $args{LIBS} eq 'ARRAY' ) {
+				$args{LIBS} = join " ", @{ $args{LIBS} };
+			}
 			$args{LIBS} = '' unless $args{LIBS};
 			$args{LIBS} =~ s,^(.*?)(\Q-L$lib_path\E\s),$1 :nosearch $2,i;
 
@@ -45,6 +51,12 @@ if( $0 eq "Makefile.PL" || $0 eq "./Makefile.PL"  ) {
 			#   - -L<libpath>
 			#   - pkg-config --libs expat
 			$args{LIBS} =~ s,(\Q-lexpat\E),:nosearch $1,;
+
+			# Special case for XS::libpanda
+			if( $args{NAME} eq 'XS::libpanda' ) {
+				$args{LIBS} =~ s,^(.*)$,:nosearch $1 :search,;
+				$args{LIBS} =~ s/-lexecinfo//g;
+			}
 			print "LIBS: $args{LIBS}\n";
 			$wm->(%args);
 		};
