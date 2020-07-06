@@ -107,7 +107,12 @@ end
 		# sudo gem install winrm winrm-elevated
 		config.vm.box = "StefanScherer/windows_10"
 		#add_synced_folders( win10 )
-		configure_windows(win10, 'win10_StefanScherer')
+		#configure_windows(win10, 'win10_StefanScherer')
+
+		#config.vm.communicator = "winrm"
+		## Admin user name and password
+		#config.winrm.username = "vagrant"
+		#config.winrm.password = "vagrant"
 	end
 
 end
