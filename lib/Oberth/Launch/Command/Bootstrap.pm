@@ -80,10 +80,6 @@ sub run_auto {
 	$self->run_setup;
 	$self->run_generate_cpanfile;
 	$self->run_install_deps_from_cpanfile;
-
-	# Pin CLI::Osprey to older version until bug fix is released
-	# <https://github.com/arodland/CLI-Osprey/pull/27>.
-	$self->_cpanm(qw(CLI::Osprey@0.05));
 }
 
 sub run_setup {
