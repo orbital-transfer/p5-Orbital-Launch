@@ -42,7 +42,9 @@ method installable_versions( $package ) {
 }
 
 method are_all_installed( @packages ) {
-	all { $self->installable_versions( $_ ) } @packages;
+	try {
+		all { $self->installed_version( $_ ) } @packages;
+	} catch { 0 };
 }
 
 method install_packages_command( @package ) {

@@ -53,7 +53,7 @@ method _install() {
 	} qw(xvfb xauth);
 	$self->runner->system(
 		$self->apt->install_packages_command(@packages)
-	);
+	) unless $self->apt->are_all_installed(@packages);
 }
 
 method install_packages($repo) {
@@ -63,7 +63,7 @@ method install_packages($repo) {
 
 	$self->runner->system(
 		$self->apt->install_packages_command(@packages)
-	) if @packages;
+	) if @packages && ! $self->apt->are_all_installed(@packages);
 
 	if( grep { $_->name eq 'meson' } @packages ) {
 		my $meson = Oberth::Launch::System::Debian::Meson->new(
