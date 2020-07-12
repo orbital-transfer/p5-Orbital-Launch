@@ -9,6 +9,7 @@ use Module::Load;
 use File::Temp qw(tempdir);
 use File::chdir;
 use Module::Reader;
+use List::AllUtils qw(first);
 
 use Oberth::Manoeuvre::Common::Setup;
 
@@ -82,9 +83,19 @@ method _install_dzil_listdeps() {
 
 }
 
+lazy dzil_name => method() {
+	# TODO fix this: an explicit name is not always there
+	my $name_line = first { /^name\s*=/ }
+		$self->directory->child('dist.ini')->lines_utf8;
+
+	my ($name) = $name_line =~ /^name\s*=\s*(.*)$/;
+
+	$name;
+};
+
 lazy dzil_build_dir => method() {
 	#File::Spec->catfile( $self->directory, qq(../_oberth/build-dir) );
-	File::Spec->catfile( $self->config->base_dir, qq(build-dir) );
+	File::Spec->catfile( $self->config->base_dir, qq(build-dir), $self->dzil_name );
 };
 
 method _dzil_build_in_dir() {
@@ -127,13 +138,12 @@ method _install_dzil_spell_check_if_needed() {
 
 	require Oberth::Launch::RepoPackage::APT;
 	if( $self->_dzil_has_plugin_test_podspelling ) {
+		my @packages = map {
+			Oberth::Launch::RepoPackage::APT->new( name => $_ )
+		} qw(aspell aspell-en);
 		$self->runner->system(
-			$self->platform->apt->install_packages_command(
-				map {
-					Oberth::Launch::RepoPackage::APT->new( name => $_ )
-				} qw(aspell aspell-en)
-			)
-		);
+			$self->platform->apt->install_packages_command( @packages )
+		) unless $self->platform->apt->are_all_installed(@packages);
 	}
 }
 

@@ -1,0 +1,11 @@
+# These packages are for the repo test
+native:
+  debian:
+    packages:
+      # For t/repo/project-renard/p5-Renard-API-AnkiConnect.t
+      - anki
+
+      # For t/repo/project-renard/p5-Renard-Yarn.t
+      - python3-pip
+      - meson
+      - libgirepository1.0-dev

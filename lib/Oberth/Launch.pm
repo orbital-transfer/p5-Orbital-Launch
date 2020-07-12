@@ -42,6 +42,8 @@ use Oberth::Manoeuvre::Common::Setup;
 use Oberth::Launch::Config;
 use Oberth::Launch::Repo;
 
+use Oberth::Manoeuvre::Common::Types qw(AbsDir);
+
 use Oberth::Launch::System::Debian;
 use Oberth::Launch::System::MacOSHomebrew;
 use Oberth::Launch::System::AppVeyor;
@@ -70,8 +72,18 @@ has config => (
 	},
 );
 
+option repo_directory => (
+	is => 'ro',
+	format => 's',
+	isa => AbsDir,
+	coerce => 1,
+	default => sub {
+		path('.');
+	},
+);
+
 lazy repo => method() {
-	my $repo = $self->repo_for_directory('.');
+	my $repo = $self->repo_for_directory($self->repo_directory);
 };
 
 method _env() {

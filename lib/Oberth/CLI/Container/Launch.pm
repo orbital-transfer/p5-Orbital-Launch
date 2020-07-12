@@ -6,7 +6,8 @@ use Oberth::Manoeuvre::Common::Setup;
 
 method commands() {
 	return +{
-		'launch' => 'Oberth::CLI::Command::Launch',
+		#'launch' => 'Oberth::CLI::Command::Launch',
+		'launch' => 'Oberth::Launch',
 		'launch/repo-info' => 'Oberth::CLI::Command::Launch::RepoInfo',
 		'launch/pod-site' => 'Oberth::CLI::Command::Launch::PodSite',
 		'launch/vagrant' => 'Oberth::CLI::Command::Launch::Vagrant',
