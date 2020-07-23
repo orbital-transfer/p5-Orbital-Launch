@@ -10,6 +10,8 @@ use Capture::Tiny qw(capture_merged);
 sub test_github {
 	my ($class, $repo_slug) = @_;
 	subtest "Check $repo_slug" => sub {
+		plan skip_all => 'Skip on Windows (for now)' if $^O eq 'MSWin32';
+
 		my $temp_dir = tempdir( CLEANUP => 1 );
 
 		my $github_uri = "https://github.com/${repo_slug}.git";
