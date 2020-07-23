@@ -88,7 +88,7 @@ lazy dzil_name => method() {
 	my $name_line = first { /^name\s*=/ }
 		$self->directory->child('dist.ini')->lines_utf8;
 
-	my ($name) = $name_line =~ /^name\s*=\s*(.*)$/;
+	my ($name) = $name_line =~ /^name\s*=\s*(\S*)$/;
 
 	$name;
 };
