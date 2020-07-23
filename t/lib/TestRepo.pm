@@ -3,7 +3,6 @@ package TestRepo;
 
 use Modern::Perl;
 use Test::Most;
-use Oberth::Launch;
 use File::Temp qw(tempdir);
 use Capture::Tiny qw(capture_merged);
 use Path::Tiny;
@@ -11,7 +10,10 @@ use Path::Tiny;
 sub test_github {
 	my ($class, $repo_slug) = @_;
 	subtest "Check $repo_slug" => sub {
-		plan skip_all => 'Skip on Windows (for now)' if $^O eq 'MSWin32';
+		TODO: {
+		todo_skip 'Skip on Windows (for now)', 1 if $^O eq 'MSWin32';
+
+		require Oberth::Launch;
 
 		my $temp_dir = tempdir( CLEANUP => 1 );
 
@@ -41,6 +43,7 @@ sub test_github {
 
 		note $merged;
 		pass if @result;
+		}
 	};
 }
 
