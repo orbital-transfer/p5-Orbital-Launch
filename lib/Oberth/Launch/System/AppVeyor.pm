@@ -135,8 +135,15 @@ EOF
 		environment => $self->environment,
 	);
 
+	# Kill background processes using DLL:
+	# <https://www.msys2.org/news/#2020-05-22-msys2-may-fail-to-start-after-a-msys2-runtime-upgrade>
+	my $kill_msys2 = Runnable->new(
+		command => [ qw(taskkill /f /fi), "MODULES eq msys-2.0.dll" ],
+	);
+
 	# Update
 	$self->runner->$_try( system => $update_runnable );
+	$self->runner->$_try( system => $kill_msys2 );
 
 	# Workaround GCC9 update issues:
 	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
@@ -157,6 +164,7 @@ EOF
 
 	# Update again
 	$self->runner->$_try( system => $update_runnable );
+	$self->runner->$_try( system => $kill_msys2 );
 
 	# build tools
 	$self->pacman(qw(mingw-w64-x86_64-make mingw-w64-x86_64-toolchain autoconf automake libtool make patch mingw-w64-x86_64-libtool));
