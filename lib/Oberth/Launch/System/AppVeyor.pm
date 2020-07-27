@@ -108,8 +108,8 @@ method _install() {
 	$self->runner->system(
 		Runnable->new(
 			command => [ qw(bash -c), <<EOF ],
-curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
-curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
+curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
 pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{.sig,};
 pacman --noconfirm -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
 EOF
