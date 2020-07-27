@@ -101,6 +101,23 @@ method cygpath($path_orig) {
 
 method _install() {
 	# Appveyor under MSYS2/MinGW64
+
+	# Update keys for new packagers:
+	# See <https://www.msys2.org/news/#2020-06-29-new-packagers>,
+	# <https://github.com/msys2/MSYS2-packages/issues/2058>
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(bash -c), <<EOF ],
+curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+curl -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
+pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{.sig,};
+pacman -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+EOF
+			environment => $self->environment,
+		)
+	);
+
+
 	$self->pacman('pacman-mirrors');
 	$self->pacman('git');
 
