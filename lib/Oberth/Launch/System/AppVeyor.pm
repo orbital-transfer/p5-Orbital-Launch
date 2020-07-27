@@ -101,6 +101,23 @@ method cygpath($path_orig) {
 
 method _install() {
 	# Appveyor under MSYS2/MinGW64
+
+	# Update keys for new packagers:
+	# See <https://www.msys2.org/news/#2020-06-29-new-packagers>,
+	# <https://github.com/msys2/MSYS2-packages/issues/2058>
+	$self->runner->system(
+		Runnable->new(
+			command => [ qw(bash -c), <<EOF ],
+curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
+pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{.sig,};
+pacman --noconfirm -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+EOF
+			environment => $self->environment,
+		)
+	);
+
+
 	$self->pacman('pacman-mirrors');
 	$self->pacman('git');
 
@@ -118,8 +135,15 @@ method _install() {
 		environment => $self->environment,
 	);
 
+	# Kill background processes using DLL:
+	# <https://www.msys2.org/news/#2020-05-22-msys2-may-fail-to-start-after-a-msys2-runtime-upgrade>
+	my $kill_msys2 = Runnable->new(
+		command => [ qw(taskkill /f /fi), "MODULES eq msys-2.0.dll" ],
+	);
+
 	# Update
 	$self->runner->$_try( system => $update_runnable );
+	$self->runner->$_try( system => $kill_msys2 );
 
 	# Workaround GCC9 update issues:
 	# Ada and ObjC support were dropped by MSYS2 with GCC9. See commit
@@ -140,6 +164,7 @@ method _install() {
 
 	# Update again
 	$self->runner->$_try( system => $update_runnable );
+	$self->runner->$_try( system => $kill_msys2 );
 
 	# build tools
 	$self->pacman(qw(mingw-w64-x86_64-make mingw-w64-x86_64-toolchain autoconf automake libtool make patch mingw-w64-x86_64-libtool));
