@@ -60,7 +60,7 @@ method install_pip3_apt( $apt ) {
 	my $pip3 = Oberth::Launch::RepoPackage::APT->new( name => 'python3-pip' );
 	$self->runner->system(
 		$apt->install_packages_command( $pip3 )
-	) unless $apt->installed_version($pip3);
+	) unless $apt->$_try( installed_version => $pip3 );
 }
 
 1;
