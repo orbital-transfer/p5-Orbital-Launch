@@ -46,7 +46,7 @@ use Oberth::Manoeuvre::Common::Types qw(AbsDir);
 
 use Oberth::Launch::System::Debian;
 use Oberth::Launch::System::MacOSHomebrew;
-use Oberth::Launch::System::AppVeyor;
+use Oberth::Launch::System::MSYS2;
 
 has repo_url_to_repo => (
 	is => 'ro',
@@ -59,7 +59,7 @@ lazy platform => method() {
 		if(  $^O eq 'darwin' && which('brew') ) {
 			$system = Oberth::Launch::System::MacOSHomebrew->new( @opt );
 		} elsif( $^O eq 'MSWin32' ) {
-			$system = Oberth::Launch::System::AppVeyor->new( @opt );
+			$system = Oberth::Launch::System::MSYS2->new( @opt );
 		} else {
 			$system = Oberth::Launch::System::Debian->new( @opt );
 		}

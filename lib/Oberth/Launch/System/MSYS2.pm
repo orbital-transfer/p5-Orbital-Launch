@@ -1,6 +1,6 @@
 use Modern::Perl;
-package Oberth::Launch::System::AppVeyor;
-# ABSTRACT: AppVeyor system for MSYS2/MinGW64
+package Oberth::Launch::System::MSYS2;
+# ABSTRACT: System for MSYS2 + MinGW64 subsystem
 
 use Mu;
 use Oberth::Manoeuvre::Common::Setup;
