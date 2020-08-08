@@ -191,7 +191,13 @@ method _install_perl() {
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
 		$self->build_perl->script( qw(cpan App::cpanminus) );
 	}
-	$self->build_perl->script( qw(cpanm --notest App::cpm ExtUtils::MakeMaker Module::Build App::pmuninstall) );
+	$self->build_perl->script( qw(cpanm --notest), $_ ) for (
+		# App::cpm
+		'https://github.com/oberth-manoeuvre/cpm.git@multi-worker-win32',
+		# Parallel::Pipes
+		'https://github.com/oberth-manoeuvre/Parallel-Pipes.git@multi-worker-win32',
+	);
+	$self->build_perl->script( qw(cpanm --notest ExtUtils::MakeMaker Module::Build App::pmuninstall) );
 	$self->build_perl->script( qw(cpanm --notest Win32::Process IO::Socket::SSL) );
 }
 

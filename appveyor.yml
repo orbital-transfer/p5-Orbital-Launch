@@ -18,6 +18,11 @@ install:
       cd $Env:OBERTH_PROTOTYPE_DIR\vendor\p5-Oberth-Launch
       git remote add appveyor $Env:APPVEYOR_BUILD_FOLDER ; git fetch appveyor ; git checkout $Env:COMMIT
       Pop-Location
+  - ps: |
+      Push-Location
+      cd $Env:OBERTH_PROTOTYPE_DIR\vendor-external\cpm
+      git remote add oberth-manoeuvre https://github.com/oberth-manoeuvre/cpm.git ; git fetch oberth-manoeuvre ; git checkout oberth-manoeuvre/multi-worker-win32
+      Pop-Location
   - ps: appveyor-oberth install
 
 build_script:
