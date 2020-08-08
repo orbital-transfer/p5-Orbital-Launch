@@ -9,44 +9,32 @@ use Path::Tiny;
 use FindBin;
 use Env qw($OBERTH_GLOBAL_INSTALL $OBERTH_COVERAGE);
 
-has base_dir => (
-	is => 'ro',
-	default => sub {
-		my $p = path('..')->absolute;
-		$p->mkpath;
-		$p->realpath;
-	},
-);
+lazy base_dir => sub {
+	my $p = path('..')->absolute;
+	$p->mkpath;
+	$p->realpath;
+};
 
-has build_tools_dir => (
-	is => 'ro',
-	default => sub {
-		my ($self) = @_;
-		my $p = $self->base_dir->child('_oberth/author-local');
-		$p->mkpath;
-		$p->realpath;
-	},
-);
+lazy build_tools_dir => sub {
+	my ($self) = @_;
+	my $p = $self->base_dir->child('_oberth/author-local');
+	$p->mkpath;
+	$p->realpath;
+};
 
-has lib_dir => (
-	is => 'ro',
-	default => sub {
-		my ($self) = @_;
-		my $p = $self->base_dir->child('local');
-		$p->mkpath;
-		$p->realpath;
-	},
-);
+lazy lib_dir => sub {
+	my ($self) = @_;
+	my $p = $self->base_dir->child('local');
+	$p->mkpath;
+	$p->realpath;
+};
 
-has external_dir => (
-	is => 'ro',
-	default => sub {
-		my ($self) = @_;
-		my $p = $self->base_dir->child(qw(_oberth external));
-		$p->mkpath;
-		$p->realpath;
-	},
-);
+lazy external_dir => sub {
+	my ($self) = @_;
+	my $p = $self->base_dir->child(qw(_oberth external));
+	$p->mkpath;
+	$p->realpath;
+};
 
 has cpan_global_install => (
 	is => 'ro',

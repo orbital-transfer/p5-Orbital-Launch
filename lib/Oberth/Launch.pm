@@ -94,6 +94,9 @@ method _env() {
 method install() {
 	$self->_env;
 
+	# NOTE In Docker, these will be later chown'd to nonroot.
+	$self->config->$_ for qw(base_dir build_tools_dir lib_dir external_dir);
+
 	$self->platform->_install;
 
 	unless( $self->config->cpan_global_install ) {
