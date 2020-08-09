@@ -67,7 +67,9 @@ lazy environment => method() {
 method command( @arguments ) {
 	Runnable->new(
 		command => [ "" . $self->perl, @arguments, ],
-		environment => $self->environment
+		environment => Oberth::Launch::EnvironmentVariables->new(
+			parent => $self->environment,
+		),
 	)
 }
 
