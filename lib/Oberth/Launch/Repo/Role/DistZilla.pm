@@ -19,6 +19,12 @@ method _dzil_command( @args ) {
 	);
 	$command->environment
 		->prepend_path_list('PERL5LIB', [ $self->directory->child('lib') ] );
+
+	# TODO figure out a better way to do this. Maybe only if the underlying
+	# Perl interpreters are the same?
+	$command->environment
+		->add_environment( $self->platform->build_perl->environment );
+
 	return $command;
 }
 
