@@ -13,6 +13,18 @@ use List::AllUtils qw(first);
 
 use Oberth::Manoeuvre::Common::Setup;
 
+method _dzil_command( @args ) {
+	return $self->platform->author_perl->script_command(
+		qw(dzil), @args,
+	);
+}
+
+method _run_dzil(@args) {
+	$self->runner->system(
+		$self->_dzil_command( @args )
+	);
+}
+
 method _install_dzil() {
 	try {
 		$self->runner->system(
@@ -30,8 +42,8 @@ method _get_dzil_authordeps() {
 
 	my ($dzil_authordeps, $dzil_authordeps_stderr, $dzil_authordeps_exit) = try {
 		$self->runner->capture(
-			$self->platform->author_perl->script_command(
-				qw(dzil authordeps)
+			$self->_dzil_command(
+				qw(authordeps)
 				# --missing
 			)
 		);
@@ -56,8 +68,8 @@ method _install_dzil_authordeps() {
 method _get_dzil_listdeps() {
 	local $CWD = $self->directory;
 	my ($dzil_deps, $dzil_deps_stderr, $exit_listdeps) = $self->runner->capture(
-		$self->platform->author_perl->script_command(
-			qw(dzil listdeps)
+		$self->_dzil_command(
+			qw(listdeps)
 			# --missing
 		)
 	);
@@ -102,8 +114,8 @@ method _dzil_build_in_dir() {
 	local $CWD = $self->directory;
 
 	say STDERR "Building dzil for @{[ $self->directory ]}";
-	$self->platform->author_perl->script(
-		qw(dzil build --in), $self->dzil_build_dir
+	$self->_run_dzil(
+		qw(build --in), $self->dzil_build_dir
 	);
 }
 
