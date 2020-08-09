@@ -14,9 +14,12 @@ use List::AllUtils qw(first);
 use Oberth::Manoeuvre::Common::Setup;
 
 method _dzil_command( @args ) {
-	return $self->platform->author_perl->script_command(
+	my $command = $self->platform->author_perl->script_command(
 		qw(dzil), @args,
 	);
+	$command->environment
+		->prepend_path_list('PERL5LIB', [ $self->directory->child('lib') ] );
+	return $command;
 }
 
 method _run_dzil(@args) {
