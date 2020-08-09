@@ -196,6 +196,8 @@ method _install_perl() {
 		'https://github.com/oberth-manoeuvre/cpm.git@multi-worker-win32',
 		# Parallel::Pipes
 		'https://github.com/oberth-manoeuvre/Parallel-Pipes.git@multi-worker-win32',
+		# HTTP::Tiny
+		'https://github.com/zmughal/p5-http-tiny.git@retry-rename',
 	);
 	$self->build_perl->script( qw(cpanm --notest ExtUtils::MakeMaker Module::Build App::pmuninstall) );
 	$self->build_perl->script( qw(cpanm --notest Win32::Process IO::Socket::SSL) );
