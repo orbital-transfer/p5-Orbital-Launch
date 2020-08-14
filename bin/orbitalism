@@ -1,0 +1,21 @@
+#!perl
+# PODNAME: orbitalism
+# ABSTRACT: Orbital launch script
+
+use strict;
+use warnings;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+sub main {
+	if( @ARGV && $ARGV[0] eq 'bootstrap' ) {
+		require Orbital::Launch::Command::Bootstrap;
+		Orbital::Launch::Command::Bootstrap->new->run;
+	} else {
+		require Orbital::Launch;
+		Orbital::Launch->new_with_options->run;
+	}
+}
+
+main;

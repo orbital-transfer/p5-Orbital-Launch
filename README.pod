@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-Oberth::Launch - Command line base for oberthian
+Orbital::Launch - Command line base for orbitalism
 
 =head1 VERSION
 

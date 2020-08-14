@@ -1,14 +1,14 @@
 @tag = 'project-renard'
-eval %x(oberth-cli launch vagrant helper)
+eval %x(orbital-cli launch vagrant helper)
 
 def add_synced_folders( config, options = {} )
 	config.vm.synced_folder ".", "/vagrant", disabled: true
 
-	directories = %x(oberth-cli launch vagrant project-directories --gitgot-tag  #{@tag}).split "\0"
+	directories = %x(orbital-cli launch vagrant project-directories --gitgot-tag  #{@tag}).split "\0"
 	add_synced_folders_helper( config, directories, 'build', options )
 
-	directories = %x(oberth-cli launch vagrant project-directories --gitgot-tag  oberth-manoeuvre).split "\0"
-	add_synced_folders_helper( config, directories, 'oberth-manoeuvre', options )
+	directories = %x(orbital-cli launch vagrant project-directories --gitgot-tag  orbital-transfer).split "\0"
+	add_synced_folders_helper( config, directories, 'orbital-transfer', options )
 end
 
 Vagrant.configure(2) do |config|

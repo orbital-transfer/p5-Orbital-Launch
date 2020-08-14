@@ -13,7 +13,7 @@ sub test_github {
 		TODO: {
 		todo_skip 'Skip on Windows (for now)', 1 if $^O eq 'MSWin32';
 
-		require Oberth::Launch;
+		require Orbital::Launch;
 
 		my $temp_dir = tempdir( CLEANUP => 1 );
 
@@ -23,14 +23,14 @@ sub test_github {
 		note $merged_git;
 
 		# Do not run coverage for repos under testing.
-		delete $ENV{OBERTH_COVERAGE};
+		delete $ENV{ORBITAL_COVERAGE};
 		# If running under CI, share the same base directory to speed up install.
 		my @use_base_dir =
-			exists $ENV{OBERTH_TEST_DIR}
-			? ( base_dir => path($ENV{OBERTH_TEST_DIR})->parent->absolute )
+			exists $ENV{ORBITAL_TEST_DIR}
+			? ( base_dir => path($ENV{ORBITAL_TEST_DIR})->parent->absolute )
 			: ();
-		my $config = Oberth::Launch::Config->new( @use_base_dir );
-		my $launch = Oberth::Launch->new( repo_directory => $temp_dir, config => $config );
+		my $config = Orbital::Launch::Config->new( @use_base_dir );
+		my $launch = Orbital::Launch->new( repo_directory => $temp_dir, config => $config );
 		my ($merged, @result);
 		lives_ok {
 			($merged, @result) = capture_merged {
