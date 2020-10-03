@@ -6,6 +6,6 @@ use lib 't/lib';
 
 use TestRepo;
 
-TestRepo->test_github("project-renard/p5-Renard-Yarn");
+TestRepo->test_github("Intertangle/p5-Intertangle-Yarn");
 
 done_testing;
