@@ -113,6 +113,15 @@ method _install() {
 	# Using mirror due to main server being down: <https://github.com/msys2/MSYS2-packages/issues/2171>.
 	$self->runner->system(
 		Runnable->new(
+			command => [ qw(bash -c), <<'EOF' ],
+perl -i -lpE 's/^(Server.*(\Qrepo.msys2.org\E|\Qsourceforge.net\E).*)$/# $1/' /etc/pacman.d/mirrorlist.m*
+EOF
+			environment => $self->environment,
+		)
+	);
+
+	$self->runner->system(
+		Runnable->new(
 			command => [ qw(bash -c), <<"EOF" ],
 curl -s -O @{[ $repo_mirrors[1] ]}msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
 curl -s -O @{[ $repo_mirrors[1] ]}msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
