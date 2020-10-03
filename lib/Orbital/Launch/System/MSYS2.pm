@@ -105,11 +105,17 @@ method _install() {
 	# Update keys for new packagers:
 	# See <https://www.msys2.org/news/#2020-06-29-new-packagers>,
 	# <https://github.com/msys2/MSYS2-packages/issues/2058>
+	my $repo_main_server = 'http://repo.msys2.org/';
+	my @repo_mirrors = (
+		$repo_main_server,
+		'https://mirror.yandex.ru/mirrors/msys2/',
+	);
+	# Using mirror due to main server being down: <https://github.com/msys2/MSYS2-packages/issues/2171>.
 	$self->runner->system(
 		Runnable->new(
-			command => [ qw(bash -c), <<EOF ],
-curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
-curl -s -O http://repo.msys2.org/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
+			command => [ qw(bash -c), <<"EOF" ],
+curl -s -O @{[ $repo_mirrors[1] ]}msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
+curl -s -O @{[ $repo_mirrors[1] ]}msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig;
 pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz{.sig,};
 pacman --noconfirm -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz;
 EOF
