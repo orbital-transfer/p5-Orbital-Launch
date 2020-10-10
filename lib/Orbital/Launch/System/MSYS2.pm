@@ -111,6 +111,7 @@ method _install() {
 		'https://mirror.yandex.ru/mirrors/msys2/',
 	);
 	# Using mirror due to main server being down: <https://github.com/msys2/MSYS2-packages/issues/2171>.
+	my $run_mirror_update_cmd = 0;
 	my $mirror_update_cmd =
 		Runnable->new(
 			command => [ qw(bash -c), <<'EOF' ],
@@ -119,7 +120,7 @@ EOF
 			environment => $self->environment,
 		);
 
-	$self->runner->system( $mirror_update_cmd );
+	$self->runner->system( $mirror_update_cmd ) if $run_mirror_update_cmd;
 
 	$self->runner->system(
 		Runnable->new(
@@ -179,7 +180,7 @@ EOF
 	} catch { };
 
 	# Fix mirrors again
-	$self->runner->system( $mirror_update_cmd );
+	$self->runner->system( $mirror_update_cmd ) if $run_mirror_update_cmd;
 
 	# Update again
 	$self->runner->$_try( system => $update_runnable );
