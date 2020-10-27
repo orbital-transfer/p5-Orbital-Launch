@@ -1,3 +1,6 @@
 requires 'Orbital::Transfer',
 	git => 'https://github.com/orbital-transfer/p5-Orbital-Transfer.git',
 	branch => 'master';
+requires 'Orbital::Payload::Environment::Perl',
+	git => 'https://github.com/orbital-transfer/p5-Orbital-Payload-Environment-Perl.git',
+	branch => 'master';
