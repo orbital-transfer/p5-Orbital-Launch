@@ -29,7 +29,7 @@ sub test_github {
 			exists $ENV{ORBITAL_TEST_DIR}
 			? ( base_dir => path($ENV{ORBITAL_TEST_DIR})->parent->absolute )
 			: ();
-		my $config = Orbital::Launch::Config->new( @use_base_dir );
+		my $config = Orbital::Transfer::Config->new( @use_base_dir );
 		my $launch = Orbital::Launch->new( repo_directory => $temp_dir, config => $config );
 		my ($merged, @result);
 		lives_ok {

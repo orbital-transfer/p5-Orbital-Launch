@@ -30,16 +30,16 @@ method get_info( $path ) {
 	my $info;
 	return $self->_info_cache->{$path} if exists $self->_info_cache->{$path};
 
-	require Orbital::Launch::Repo;
-	my $repo = Orbital::Launch::Repo->new(
+	require Orbital::Transfer::Repo;
+	my $repo = Orbital::Transfer::Repo->new(
 		directory => $path,
 		config => undef,
 		platform => undef,
 	);
 
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::DistZilla');
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::CpanfileGit');
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::DevopsYaml');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::DistZilla');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::CpanfileGit');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 
 	$info->{path} = path($path);
 	try {
