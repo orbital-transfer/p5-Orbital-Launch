@@ -39,14 +39,14 @@ use Safe::Isa;
 
 use Orbital::Transfer::Common::Setup;
 
-use Orbital::Launch::Config;
-use Orbital::Launch::Repo;
+use Orbital::Transfer::Config;
+use Orbital::Transfer::Repo;
 
 use Orbital::Transfer::Common::Types qw(AbsDir);
 
-use Orbital::Launch::System::Debian;
-use Orbital::Launch::System::MacOSHomebrew;
-use Orbital::Launch::System::MSYS2;
+use Orbital::Transfer::System::Debian;
+use Orbital::Transfer::System::MacOSHomebrew;
+use Orbital::Transfer::System::MSYS2;
 
 has repo_url_to_repo => (
 	is => 'ro',
@@ -57,18 +57,18 @@ lazy platform => method() {
 		my @opt = ( config => $self->config );
 		my $system;
 		if(  $^O eq 'darwin' && which('brew') ) {
-			$system = Orbital::Launch::System::MacOSHomebrew->new( @opt );
+			$system = Orbital::Transfer::System::MacOSHomebrew->new( @opt );
 		} elsif( $^O eq 'MSWin32' ) {
-			$system = Orbital::Launch::System::MSYS2->new( @opt );
+			$system = Orbital::Transfer::System::MSYS2->new( @opt );
 		} else {
-			$system = Orbital::Launch::System::Debian->new( @opt );
+			$system = Orbital::Transfer::System::Debian->new( @opt );
 		}
 };
 
 has config => (
 	is => 'ro',
 	default => sub {
-		Orbital::Launch::Config->new();
+		Orbital::Transfer::Config->new();
 	},
 );
 
@@ -221,15 +221,15 @@ method clone_git($url, $branch = 'master') {
 }
 
 method repo_for_directory($directory) {
-	my $repo = Orbital::Launch::Repo->new(
+	my $repo = Orbital::Transfer::Repo->new(
 		directory => $directory,
 		config => $self->config,
 		platform => $self->platform,
 	);
 
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::DistZilla');
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::CpanfileGit');
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Launch::Repo::Role::DevopsYaml');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::DistZilla');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::CpanfileGit');
+	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 }
 
 
