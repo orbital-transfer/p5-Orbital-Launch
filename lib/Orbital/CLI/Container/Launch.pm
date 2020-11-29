@@ -13,6 +13,7 @@ method commands() {
 		'launch/vagrant' => 'Orbital::CLI::Command::Launch::Vagrant',
 		'launch/vagrant/helper' => 'Orbital::CLI::Command::Launch::Vagrant::Helper',
 		'launch/vagrant/project-directories' => 'Orbital::CLI::Command::Launch::Vagrant::ProjectDirectories',
+		'launch/cigen' => 'Orbital::Launch::CIGen',
 	}
 }
 
