@@ -37,8 +37,9 @@ method get_info( $path ) {
 		platform => undef,
 	);
 
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::DistZilla');
-	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Payload::Environment::Perl::Repo::Role::CpanfileGit');
+	require Orbital::Payload::Environment::Perl;
+	Orbital::Payload::Environment::Perl->apply_roles_to_repo( $repo );
+
 	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 
 	$info->{path} = path($path);
