@@ -5,7 +5,6 @@ package Orbital::CLI::Command::Launch::Vagrant;
 use Modern::Perl;
 use Mu;
 use CLI::Osprey;
-use Clone qw(clone);
 use Try::Tiny;
 use Path::Tiny;
 

@@ -5,7 +5,7 @@ package Orbital::CLI::Command::Launch::RepoInfo;
 use Modern::Perl;
 use Mu;
 use CLI::Osprey;
-use Clone qw(clone);
+use Storable qw(dclone);
 use Try::Tiny;
 use Path::Tiny;
 
@@ -47,7 +47,7 @@ method get_info( $path ) {
 		$info->{devops} = $repo->devops_data;
 	} catch {
 	};
-	my $deps = clone($repo->cpanfile_git_data);
+	my $deps = dclone($repo->cpanfile_git_data);
 
 	for my $name ( keys %{ $deps } ) {
 		my $github = Orbital::Payload::Service::GitHub::Repo->new(
