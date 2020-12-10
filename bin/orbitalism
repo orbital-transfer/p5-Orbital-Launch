@@ -9,6 +9,10 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 
 sub main {
+	if ( grep { /^\QFatPacked::\E/ } @INC ) {
+		$ENV{PERL_PARAMS_UTIL_PP} = 1;
+	}
+
 	if( @ARGV && $ARGV[0] eq 'bootstrap' ) {
 		require Orbital::Launch::Command::Bootstrap;
 		Orbital::Launch::Command::Bootstrap->new->run;
