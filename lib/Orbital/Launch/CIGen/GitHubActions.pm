@@ -40,9 +40,9 @@ jobs:
         env:
           cache-name: cache-orbital
         with:
-          path:
-	    ../_orbital/author-local
-	    ../local
+          path: |
+            ../_orbital/author-local
+            ../local
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
