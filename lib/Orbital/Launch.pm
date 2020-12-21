@@ -7,9 +7,12 @@ use Env qw(@PATH);
 use Config;
 
 use Orbital::Launch::FindLaunchSite;
+use Orbital::Launch::FindLaunchHome;
 
 use constant OP_DIR => Orbital::Launch::FindLaunchSite->get_launch_site_path_via_bin;
-use constant BUILD_TOOLS_DIR => File::Spec->catfile( OP_DIR , qw(extlib));
+use constant BUILD_TOOLS_DIR => $ENV{CI}
+	? File::Spec->catfile( Orbital::Launch::FindLaunchHome->get_home, qw(.orbital), qw(extlib))
+	: File::Spec->catfile( OP_DIR , qw(extlib));
 
 use constant BIN_DIRS => [
 	'bin'

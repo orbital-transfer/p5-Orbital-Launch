@@ -41,8 +41,9 @@ jobs:
           cache-name: cache-orbital
         with:
           path: |
-            ../_orbital/author-local
-            ../local
+            ~/.orbital/extlib
+            ~/.orbital/_orbital/author-local
+            ~/.orbital/local
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-

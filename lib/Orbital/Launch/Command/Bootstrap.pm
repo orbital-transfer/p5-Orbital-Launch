@@ -5,6 +5,7 @@ package Orbital::Launch::Command::Bootstrap;
 
 use feature 'say';
 use Orbital::Launch::FindLaunchSite;
+use Orbital::Launch::FindLaunchHome;
 use Cwd qw(getcwd);
 use IPC::Open3;
 use File::Spec;
@@ -48,7 +49,11 @@ sub new {
 
 	my ($bin_dir, $lib_dir);
 	if( ! $global ) {
-		$dir = File::Spec->catfile( $op_dir, qw(extlib)) unless $dir;
+		if( $ENV{CI} ) {
+			$dir = File::Spec->catfile( Orbital::Launch::FindLaunchHome->get_home, qw(.orbital), qw(extlib));
+		} else {
+			$dir = File::Spec->catfile( $op_dir, qw(extlib)) unless $dir;
+		}
 
 		$bin_dir = File::Spec->catfile($dir, qw(bin));
 		make_path $bin_dir;
