@@ -32,6 +32,8 @@ BEGIN {
 	unshift @PATH,     File::Spec->catfile( $lib_dir, $_ ) for @{ (BIN_DIRS) };
 }
 
+use Carp::Always ();
+
 use Mu;
 use CLI::Osprey;
 
@@ -130,6 +132,11 @@ method test() {
 }
 
 method run() {
+	if( $ENV{CI} ) {
+		# Carp under CI for debugging
+		Carp::Always->import();
+	}
+
 	try {
 		$self->install;
 	} catch {
