@@ -153,6 +153,46 @@ method install_recursively($repo, :$main = 0, :$native = 0) {
 	}
 }
 
+
+use YAML;
+method read_meta_file() {
+	my $data = -f $self->config->meta_file
+		? YAML::LoadFile($self->config->meta_file)
+		: {};
+}
+
+method meta_get_installed_version( $repo ) {
+	my $data = $self->read_meta_file;
+
+	my $url = $self->get_repo_url( $repo );
+	return $data->{repo}{ $url }{version} || '';
+}
+
+method meta_set_installed_version( $repo ) {
+	my $data = $self->read_meta_file;
+
+	my $url = $self->get_repo_url( $repo );
+	my $describe = $self->git_repo_git_describe( $repo );
+
+	$data->{repo}{ $url }{version} = $describe;
+
+	YAML::DumpFile( $self->config->meta_file, $data );
+}
+
+use Git::Wrapper;
+use List::AllUtils qw(first);
+use Orbital::Payload::VCS::Git;
+method git_repo_git_describe( $repo ) {
+	my $git = Orbital::Payload::VCS::Git->new( directory => $repo->directory );
+	my ($describe) = $git->_git_wrapper->describe( { always => 1 }, 'HEAD' );
+
+	return $describe;
+}
+method get_repo_url( $repo ) {
+	my $urls = $self->repo_url_to_repo;
+	my $repo_url = first { $urls->{$_}->directory eq $repo->directory } keys %$urls;
+}
+
 method install_repo($repo, :$native = 0 ) {
 	return if -f $repo->directory->child('installed');
 
@@ -161,11 +201,19 @@ method install_repo($repo, :$native = 0 ) {
 	if( $native ) {
 		$self->platform->install_packages($repo);
 	} else {
+		if( $self->meta_get_installed_version( $repo ) eq $self->git_repo_git_describe( $repo ) ) {
+			say STDERR "Already installed @{[ $repo->directory ]} @ @{[ $self->meta_get_installed_version($repo) ]}";
+			return 0; # exit success
+		} else {
+			$repo->$_call_if_can( uninstall => );
+		}
+
 		$repo->setup_build;
 		$exit = $repo->install;
 
 		say STDERR "Installed @{[ $repo->directory ]}";
 		$repo->directory->child('installed')->touch;
+		$self->meta_set_installed_version( $repo );
 	}
 
 	return $exit;
