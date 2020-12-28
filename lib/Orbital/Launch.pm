@@ -135,6 +135,8 @@ method run() {
 	if( $ENV{CI} ) {
 		# Carp under CI for debugging
 		Carp::Always->import();
+		# longer debug for Type::Tiny
+		$Type::Tiny::DD = 1024;
 	}
 
 	try {
