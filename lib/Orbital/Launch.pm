@@ -49,9 +49,9 @@ use Orbital::Transfer::Repo;
 
 use Orbital::Transfer::Common::Types qw(AbsDir);
 
-use Orbital::Transfer::System::Debian;
-use Orbital::Transfer::System::MacOSHomebrew;
-use Orbital::Transfer::System::MSYS2;
+use Orbital::Payload::System::System::Debian;
+use Orbital::Payload::System::System::MacOSHomebrew;
+use Orbital::Payload::System::System::MSYS2;
 
 has repo_url_to_repo => (
 	is => 'ro',
@@ -62,11 +62,11 @@ lazy platform => method() {
 		my @opt = ( config => $self->config );
 		my $system;
 		if(  $^O eq 'darwin' && which('brew') ) {
-			$system = Orbital::Transfer::System::MacOSHomebrew->new( @opt );
+			$system = Orbital::Payload::System::System::MacOSHomebrew->new( @opt );
 		} elsif( $^O eq 'MSWin32' ) {
-			$system = Orbital::Transfer::System::MSYS2->new( @opt );
+			$system = Orbital::Payload::System::System::MSYS2->new( @opt );
 		} else {
-			$system = Orbital::Transfer::System::Debian->new( @opt );
+			$system = Orbital::Payload::System::System::Debian->new( @opt );
 		}
 };
 
