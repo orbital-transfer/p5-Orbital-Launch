@@ -12,8 +12,8 @@ use Orbital::Launch::CIGen::GitHubActions;
 
 method run() {
 	my $paths_to_data = {
-		'appveyor.yml' => ${ Orbital::Launch::CIGen::AppVeyor->section_data('appveyor.yml') },
-		'.travis.yml'  => ${ Orbital::Launch::CIGen::TravisCI->section_data('.travis.yml') },
+		#'appveyor.yml' => ${ Orbital::Launch::CIGen::AppVeyor->section_data('appveyor.yml') },
+		#'.travis.yml'  => ${ Orbital::Launch::CIGen::TravisCI->section_data('.travis.yml') },
 		'.github/workflows/orbital-transfer.yml'  => ${ Orbital::Launch::CIGen::GitHubActions->section_data('orbital-transfer.yml') },
 	};
 	while( my ($path, $data) = each %$paths_to_data ) {
