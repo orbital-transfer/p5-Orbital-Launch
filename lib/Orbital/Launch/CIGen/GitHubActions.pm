@@ -10,6 +10,7 @@ __[ orbital-transfer.yml ]__
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - '*'
