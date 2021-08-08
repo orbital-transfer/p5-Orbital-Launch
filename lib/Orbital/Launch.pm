@@ -49,9 +49,9 @@ use Orbital::Transfer::Repo;
 
 use Orbital::Transfer::Common::Types qw(AbsDir);
 
-use Orbital::Payload::System::System::Debian;
-use Orbital::Payload::System::System::MacOSHomebrew;
-use Orbital::Payload::System::System::MSYS2;
+use Orbital::Payload::Sys::System::Debian;
+use Orbital::Payload::Sys::System::MacOSHomebrew;
+use Orbital::Payload::Sys::System::MSYS2;
 
 has repo_url_to_repo => (
 	is => 'ro',
@@ -62,11 +62,11 @@ lazy platform => method() {
 		my @opt = ( config => $self->config );
 		my $system;
 		if(  $^O eq 'darwin' && which('brew') ) {
-			$system = Orbital::Payload::System::System::MacOSHomebrew->new( @opt );
+			$system = Orbital::Payload::Sys::System::MacOSHomebrew->new( @opt );
 		} elsif( $^O eq 'MSWin32' ) {
-			$system = Orbital::Payload::System::System::MSYS2->new( @opt );
+			$system = Orbital::Payload::Sys::System::MSYS2->new( @opt );
 		} else {
-			$system = Orbital::Payload::System::System::Debian->new( @opt );
+			$system = Orbital::Payload::Sys::System::Debian->new( @opt );
 		}
 };
 
@@ -287,8 +287,8 @@ method repo_for_directory($directory) {
 		platform => $self->platform,
 	);
 
-	require Orbital::Payload::Environment::Perl;
-	Orbital::Payload::Environment::Perl->apply_roles_to_repo( $repo );
+	require Orbital::Payload::Env::Perl;
+	Orbital::Payload::Env::Perl->apply_roles_to_repo( $repo );
 
 	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 }

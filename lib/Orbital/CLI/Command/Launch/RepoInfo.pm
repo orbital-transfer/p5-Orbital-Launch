@@ -37,8 +37,8 @@ method get_info( $path ) {
 		platform => undef,
 	);
 
-	require Orbital::Payload::Environment::Perl;
-	Orbital::Payload::Environment::Perl->apply_roles_to_repo( $repo );
+	require Orbital::Payload::Env::Perl;
+	Orbital::Payload::Env::Perl->apply_roles_to_repo( $repo );
 
 	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 
@@ -50,7 +50,7 @@ method get_info( $path ) {
 	my $deps = dclone($repo->cpanfile_git_data);
 
 	for my $name ( keys %{ $deps } ) {
-		my $github = Orbital::Payload::Service::GitHub::Repo->new(
+		my $github = Orbital::Payload::Serv::GitHub::Repo->new(
 			uri => $deps->{$name}{git},
 		);
 
