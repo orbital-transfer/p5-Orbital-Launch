@@ -105,6 +105,36 @@ sub run_setup {
 		#qw(Perl::PrereqScanner),
 		qw(App::scan_prereqs_cpanfile),
 	);
+
+	# if
+	# - have a .repoid in current directory,
+	# - git executable
+	if( -f '.repoid' && system(qw(git --version)) == 0 ) {
+		my @dirs = $self->get_vendor_dirs;
+		my $abs_path = File::Spec->rel2abs('.');
+		my $repoid = $self->slurp_file( '.repoid' );
+		for my $vendor_dir (@dirs) {
+			my $vendor_repoid_path = File::Spec->catfile($vendor_dir, '.repoid');
+			my $vendor_repoid = $self->slurp_file( $vendor_repoid_path );
+			if( $repoid eq $vendor_repoid ) {
+				$self->log("Repo ID $repoid matches with $vendor_dir. Using current HEAD.");
+				system( qw(git),
+					"--git-dir=@{[ File::Spec->catfile($abs_path, '.git') ]}",
+					"--work-tree=$vendor_dir",
+					qw( reset --hard )
+				);
+			}
+		}
+	}
+}
+
+sub slurp_file {
+	my ($self, $path) = @_;
+	open my $fh, '<', $path or die;
+	local $/ = undef;
+	my $content = <$fh>;
+	close $fh;
+	return $content;
 }
 
 sub _cpm {
