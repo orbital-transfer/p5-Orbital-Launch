@@ -1,6 +1,10 @@
 #!/usr/bin/env perl
 
-use Test::Most tests => 1;
+use Test::Most;
+
+plan exists $INC{'Devel/Cover.pm'}
+	? ( skip_all => 'Skipping under Devel::Cover' )
+	: ( tests => 1 );
 
 use lib 't/lib';
 
