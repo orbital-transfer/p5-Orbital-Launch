@@ -4,6 +4,9 @@ requires 'Orbital::Transfer',
 requires 'Orbital::Payload::Sys',
 	git => 'https://github.com/orbital-transfer/p5-Orbital-Payload-Sys.git',
 	branch => 'master';
+requires 'Orbital::Payload::VCS::Git',
+	git => 'https://github.com/orbital-transfer/p5-Orbital-Payload-VCS-Git.git',
+	branch => 'master';
 requires 'Orbital::Payload::Env::Perl',
 	git => 'https://github.com/orbital-transfer/p5-Orbital-Payload-Env-Perl.git',
 	branch => 'master';
