@@ -55,6 +55,7 @@ method get_info( $path ) {
 		);
 
 		my $dep_path = $self->finder->find_path( $github );
+		warn "No path found for $name" unless $dep_path;
 
 		$info->{deps}{$name} = $self->get_info(
 			$dep_path,
