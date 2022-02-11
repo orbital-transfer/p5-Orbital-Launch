@@ -34,6 +34,10 @@ Vagrant.configure(2) do |config|
 		add_synced_folders( debian )
         end
 
+	config.vm.define :freebsd_12_3, autostart: false do |freebsd|
+		freebsd.vm.box = "freebsd/FreeBSD-12.3-STABLE"
+	end
+
 	# To add the Yosemite box, run
 	#
 	#     $ vagrant box add https://vagrantcloud.com/AndrewDryga/boxes/vagrant-box-osx/versions/0.2.1/providers/virtualbox.box --name AndrewDryga/vagrant-box-osx-yosemite
