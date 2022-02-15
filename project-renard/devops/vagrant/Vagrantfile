@@ -38,6 +38,10 @@ Vagrant.configure(2) do |config|
 		freebsd.vm.box = "freebsd/FreeBSD-12.3-STABLE"
 	end
 
+	config.vm.define :solaris_11_4_dev, autostart: false do |solaris|
+		solaris.vm.box = "rbrunckhorst/solaris11.4_dev"
+	end
+
 	# To add the Yosemite box, run
 	#
 	#     $ vagrant box add https://vagrantcloud.com/AndrewDryga/boxes/vagrant-box-osx/versions/0.2.1/providers/virtualbox.box --name AndrewDryga/vagrant-box-osx-yosemite
