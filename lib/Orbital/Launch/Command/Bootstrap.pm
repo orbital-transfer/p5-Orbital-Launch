@@ -49,7 +49,7 @@ sub new {
 	my $op_dir = Orbital::Launch::FindLaunchSite->get_launch_site_path_via_bin;
 
 	my $perl_abs_dir = File::Spec->rel2abs(dirname($^X));
-	if( $perl_abs_dir =~ m,\Q\\Strawberry\\perl\\bin\E, ) {
+	if( $perl_abs_dir =~ m,\Q\Strawberry\perl\bin\E,i ) {
 		# perl.exe in
 		# \Strawberry\perl\bin\perl.exe
 		# compiler in
