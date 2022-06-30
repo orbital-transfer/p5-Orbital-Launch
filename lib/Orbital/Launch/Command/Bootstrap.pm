@@ -48,14 +48,15 @@ sub new {
 
 	my $op_dir = Orbital::Launch::FindLaunchSite->get_launch_site_path_via_bin;
 
-	if( $^X =~ m,\Q\\Strawberry\\perl\\bin\E, ) {
+	my $perl_abs_dir = File::Spec->rel2abs(dirname($^X));
+	if( $perl_abs_dir =~ m,\Q\\Strawberry\\perl\\bin\E, ) {
 		# perl.exe in
 		# \Strawberry\perl\bin\perl.exe
 		# compiler in
 		# \Strawberry\c\bin\gcc
 		# because this compiler is needed for building modules
 		my $c_bin = File::Spec->rel2abs(
-			File::Spec->catfile(dirname($^X),
+			File::Spec->catfile($perl_abs_dir,
 				'..', '..', 'c', 'bin') );
 		unshift @PATH, $c_bin;
 	}
