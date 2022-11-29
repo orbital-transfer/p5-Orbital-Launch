@@ -5,7 +5,6 @@ package Orbital::CLI::Command::Launch::RepoInfo;
 use Mu;
 use CLI::Osprey;
 use Storable qw(dclone);
-use Try::Tiny;
 use Path::Tiny;
 
 lazy finder => method() {
@@ -42,9 +41,9 @@ method get_info( $path ) {
 	Moo::Role->apply_roles_to_object( $repo, 'Orbital::Transfer::Repo::Role::DevopsYaml');
 
 	$info->{path} = path($path);
-	try {
+	try_tt {
 		$info->{devops} = $repo->devops_data;
-	} catch {
+	} catch_tt {
 	};
 	my $deps = dclone($repo->cpanfile_git_data);
 

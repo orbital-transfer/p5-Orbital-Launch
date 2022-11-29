@@ -139,9 +139,9 @@ method run() {
 		$Type::Tiny::DD = 1024;
 	}
 
-	try {
+	try_tt {
 		$self->install;
-	} catch {
+	} catch_tt {
 		warn "Install failed: $_";
 	};
 }
