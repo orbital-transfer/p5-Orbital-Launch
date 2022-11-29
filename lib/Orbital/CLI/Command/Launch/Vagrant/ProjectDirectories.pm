@@ -2,10 +2,9 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch::Vagrant::ProjectDirectories;
 # ABSTRACT: List project directories
 
+use Orbital::Transfer::Common::Setup;
 use Mu;
 use CLI::Osprey;
-use Try::Tiny;
-use Path::Tiny;
 
 option gitgot_tag => (
 	is => 'ro',

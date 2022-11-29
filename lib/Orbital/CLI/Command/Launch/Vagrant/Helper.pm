@@ -2,6 +2,7 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch::Vagrant::Helper;
 # ABSTRACT: Vagrant helper code
 
+use Orbital::Transfer::Common::Setup;
 use Mu;
 use CLI::Osprey;
 use Data::Section -setup;

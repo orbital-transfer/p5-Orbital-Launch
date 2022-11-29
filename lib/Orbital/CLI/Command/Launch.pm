@@ -2,6 +2,7 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch;
 # ABSTRACT: Launch commands
 
+use Orbital::Transfer::Common::Setup;
 use Moo;
 use CLI::Osprey;
 

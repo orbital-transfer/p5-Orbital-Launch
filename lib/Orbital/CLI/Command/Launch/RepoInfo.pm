@@ -2,10 +2,10 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch::RepoInfo;
 # ABSTRACT: Dump repository info
 
+use Orbital::Transfer::Common::Setup;
 use Mu;
 use CLI::Osprey;
 use Storable qw(dclone);
-use Path::Tiny;
 
 lazy finder => method() {
 	eval "require Orbital::Payload::Meta::GitGot::RepoFinder"; ## no critic: 'ProhibitStringyEval'

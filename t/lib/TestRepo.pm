@@ -3,9 +3,9 @@ package TestRepo;
 # ABSTRACT: Helper for testing a repository
 
 use Test::Most;
+use Orbital::Transfer::Common::Setup;
 use File::Temp qw(tempdir);
 use Capture::Tiny qw(capture_merged);
-use Path::Tiny;
 
 sub test_github {
 	my ($class, $repo_slug) = @_;

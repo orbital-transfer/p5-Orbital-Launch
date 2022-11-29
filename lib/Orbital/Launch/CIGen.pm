@@ -2,10 +2,10 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::Launch::CIGen;
 # ABSTRACT: Generate CI configurations
 
+use Orbital::Transfer::Common::Setup;
 use Moo;
 use CLI::Osprey;
 
-use Path::Tiny;
 use Orbital::Launch::CIGen::AppVeyor;
 use Orbital::Launch::CIGen::TravisCI;
 use Orbital::Launch::CIGen::GitHubActions;
