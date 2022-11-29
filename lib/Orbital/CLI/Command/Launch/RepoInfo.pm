@@ -2,7 +2,6 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch::RepoInfo;
 # ABSTRACT: Dump repository info
 
-use Modern::Perl;
 use Mu;
 use CLI::Osprey;
 use Storable qw(dclone);

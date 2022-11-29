@@ -1,8 +1,6 @@
-use Modern::Perl;
+use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Container::Launch;
 # ABSTRACT: Container for Launch
-
-use Orbital::Transfer::Common::Setup;
 
 method commands() {
 	return +{

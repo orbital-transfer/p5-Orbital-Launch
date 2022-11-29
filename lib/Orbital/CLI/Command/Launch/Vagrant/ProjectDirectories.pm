@@ -2,7 +2,6 @@ use Orbital::Transfer::Common::Setup;
 package Orbital::CLI::Command::Launch::Vagrant::ProjectDirectories;
 # ABSTRACT: List project directories
 
-use Modern::Perl;
 use Mu;
 use CLI::Osprey;
 use Try::Tiny;

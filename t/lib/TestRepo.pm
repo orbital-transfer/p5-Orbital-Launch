@@ -1,7 +1,7 @@
+use Orbital::Transfer::Common::Setup;
 package TestRepo;
 # ABSTRACT: Helper for testing a repository
 
-use Modern::Perl;
 use Test::Most;
 use File::Temp qw(tempdir);
 use Capture::Tiny qw(capture_merged);
