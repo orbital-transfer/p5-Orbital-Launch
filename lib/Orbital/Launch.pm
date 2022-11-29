@@ -157,7 +157,7 @@ method install_recursively($repo, :$main = 0, :$native = 0) {
 		$self->install_recursively( $dep, native => $native  );
 	}
 	if( !$main ) {
-		say STDERR "Installing @{[ $repo->directory ]}";
+		print STDERR "Installing @{[ $repo->directory ]}", "\n";
 		$self->install_repo($repo, native => $native );
 	}
 }
@@ -211,7 +211,7 @@ method install_repo($repo, :$native = 0 ) {
 		$self->platform->install_packages($repo);
 	} else {
 		if( $self->meta_get_installed_version( $repo ) eq $self->git_repo_git_describe( $repo ) ) {
-			say STDERR "Already installed @{[ $repo->directory ]} @ @{[ $self->meta_get_installed_version($repo) ]}";
+			print STDERR "Already installed @{[ $repo->directory ]} @ @{[ $self->meta_get_installed_version($repo) ]}", "\n";
 			return 0; # exit success
 		} else {
 			$repo->$_call_if_can( uninstall => );
@@ -220,7 +220,7 @@ method install_repo($repo, :$native = 0 ) {
 		$repo->setup_build;
 		$exit = $repo->install;
 
-		say STDERR "Installed @{[ $repo->directory ]}";
+		print STDERR "Installed @{[ $repo->directory ]}", "\n";
 		$repo->directory->child('installed')->touch;
 		$self->meta_set_installed_version( $repo );
 	}
@@ -263,7 +263,7 @@ method fetch_git($repo) {
 method clone_git($url, $branch = 'master') {
 	$branch = 'master' unless $branch;
 
-	say STDERR "Cloning $url @ [branch: $branch]";
+	print STDERR "Cloning $url @ [branch: $branch]", "\n";
 	my ($parts) = $url =~ m,^https?://[^/]+/(.+?)(?:\.git)?$,;
 	my $path = File::Spec->rel2abs(File::Spec->catfile($self->config->external_dir, split(m|/|, $parts)));
 

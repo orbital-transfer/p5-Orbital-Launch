@@ -3,7 +3,6 @@ use warnings;
 package Orbital::Launch::Command::Bootstrap;
 # ABSTRACT: Bootstrap a repo
 
-use feature 'say';
 use Orbital::Launch::FindLaunchSite;
 use Orbital::Launch::FindLaunchHome;
 use Cwd qw(getcwd);
@@ -215,7 +214,7 @@ sub run_generate_cpanfile {
 	$self->create_cpanfile_in_directory($self->{orbitalism_dir});
 
 	my @dirs = $self->get_vendor_dirs;
-	say @dirs;
+	print @dirs, "\n";
 	for my $vendor_dir (@dirs) {
 		$self->create_cpanfile_in_directory($vendor_dir);
 	}
@@ -321,7 +320,7 @@ sub install_self_contained_cpm {
 
 sub log {
 	my ($self, $message) = @_;
-	say STDERR "Bootstrap: $message";
+	print STDERR "Bootstrap: $message\n";
 }
 
 sub system {
