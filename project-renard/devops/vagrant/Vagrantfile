@@ -136,4 +136,11 @@ end
 		#config.winrm.password = "vagrant"
 	end
 
+	config.vm.define :win10_peru, autostart: false do |win10|
+		config.vm.box = "peru/windows-10-enterprise-x64-eval"
+		win10.vm.provider "virtualbox" do |v|
+			v.memory = 2048
+		end
+	end
+
 end
