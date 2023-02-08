@@ -127,7 +127,7 @@ end
 
 	config.vm.define :win10_StefanScherer, autostart: false do |win10|
 		# sudo gem install winrm winrm-elevated
-		config.vm.box = "StefanScherer/windows_10"
+		win10.vm.box = "StefanScherer/windows_10"
 		#add_synced_folders( win10 )
 		#configure_windows(win10, 'win10_StefanScherer')
 
@@ -138,7 +138,7 @@ end
 	end
 
 	config.vm.define :win10_peru, autostart: false do |win10|
-		config.vm.box = "peru/windows-10-enterprise-x64-eval"
+		win10.vm.box = "peru/windows-10-enterprise-x64-eval"
 		win10.vm.provider "virtualbox" do |v|
 			v.memory = 2048
 		end
