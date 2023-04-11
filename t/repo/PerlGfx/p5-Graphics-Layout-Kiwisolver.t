@@ -10,6 +10,6 @@ use lib 't/lib';
 
 use TestRepo;
 
-TestRepo->test_github("project-renard/p5-Renard-API-AnkiConnect");
+TestRepo->test_github("PerlGfx/p5-Graphics-Layout-Kiwisolver");
 
 done_testing;

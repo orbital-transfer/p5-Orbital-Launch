@@ -10,6 +10,6 @@ use lib 't/lib';
 
 use TestRepo;
 
-TestRepo->test_github("Intertangle/p5-Intertangle-API-Kiwisolver");
+TestRepo->test_github("Qanu/p5-Net-Async-WebService-AnkiConnect");
 
 done_testing;
