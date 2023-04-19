@@ -6,6 +6,7 @@ use Orbital::Transfer::Common::Setup;
 use Mu;
 use CLI::Osprey;
 use Storable qw(dclone);
+use Module::Load;
 
 lazy finder => method() {
 	eval "require Orbital::Payload::Meta::GitGot::RepoFinder"; ## no critic: 'ProhibitStringyEval'
@@ -14,9 +15,40 @@ lazy finder => method() {
 
 method run() {
 	## no critic: 'ProhibitStringyEval'
+	my $info = $self->get_info( $self->repo_path );
+
 	eval q|
-		use DDP; p $self->get_info( $self->repo_path );
-	|;
+		use DDP; p $info;
+	| if 0;
+
+	$self->dump_dot($info);
+
+}
+
+method dump_dot($info) {
+	load 'GraphViz2';
+	my $g = GraphViz2->new(
+		global => { directed => 1, },
+		graph  => { label => 'Deps for ' . path($self->repo_path)->basename , rankdir => 'LR' },
+	);
+	my $cache = $self->_info_cache;
+	my %nodes;
+	for my $data ( @{ $cache  }{ sort keys %$cache } ) {
+		my $path = path($data->{path});
+		my $path_node = $path->basename;
+		$nodes{ $path_node } ||= do { $g->add_node( name => $path_node, shape => 'ellipse' ); 1 };
+
+		for my $native_dep (@{ $data->{devops}{native}{debian}{packages} // [] }) {
+			$nodes{$native_dep} ||= do { $g->add_node( name => $native_dep,  shape => 'box' ); 1 };
+			$g->add_edge( from => $path_node, to => $native_dep );
+		}
+
+		for my $dep (map { path($_->{path})->basename } values %{ $data->{deps} } ) {
+			$g->add_edge( from => $path_node, to => $dep );
+		}
+	}
+
+	print $g->dot_input;
 }
 
 has _info_cache => (
