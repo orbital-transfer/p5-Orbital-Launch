@@ -86,7 +86,8 @@ module VagrantPlugins
   end
 end
 
-def create_and_add_ssh_key()
+def create_and_add_ssh_key(directory)
+	Dir.chdir(directory) {
 	privkey_path = '.id_vagrant'
 	pubkey_path = '.id_vagrant.pub'
 	authorized_keys_path = File.expand_path("~/.ssh/authorized_keys")
@@ -110,8 +111,8 @@ def create_and_add_ssh_key()
 
 	privkey = File.readlines(privkey_path).join("")
 	return privkey
+	}
 end
-@privkey = create_and_add_ssh_key()
 
 def configure_windows(win10, name)
 	win10.ssh.username = "IEUser"

@@ -1,6 +1,7 @@
 # requires sshpass for configure_windows()
 @tag = 'project-renard'
 eval %x(orbital-cli launch vagrant helper)
+@privkey = create_and_add_ssh_key(File.dirname(__FILE__))
 
 def add_synced_folders( config, options = {} )
 	config.vm.synced_folder ".", "/vagrant", disabled: true
