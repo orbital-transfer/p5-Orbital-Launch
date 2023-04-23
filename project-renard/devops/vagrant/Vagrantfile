@@ -92,7 +92,7 @@ Vagrant.configure(2) do |config|
 			sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -off -restart -agent -privs -all -allowAccessFor -allUsers -clientopts -setvncpw -vncpw $VNC_PASSWD -setvnclegacy -vnclegacy yes
 		SHELL
 
-		osx.vm.provision :shell, privileged: false, inline: File.readlines('../script/from-vagrant/os-install-osx-sshfs').join("")
+		osx.vm.provision :shell, privileged: false, inline: File.readlines(File.join(File.dirname(__FILE__), '../script/from-vagrant/os-install-osx-sshfs')).join("")
 		osx.vm.provision :shell, privileged: false, inline: <<~SHELL
 			echo '#{@privkey}' > ~/.ssh/id_host
 			chmod 600 ~/.ssh/id_host
