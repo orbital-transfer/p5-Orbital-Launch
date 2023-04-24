@@ -9,8 +9,8 @@ use Storable qw(dclone);
 use Module::Load;
 
 lazy finder => method() {
-	eval "require Orbital::Payload::Meta::GitGot::RepoFinder"; ## no critic: 'ProhibitStringyEval'
-	my $finder = Orbital::Payload::Meta::GitGot::RepoFinder->new;
+	eval "require Orbital::Payload::Tool::GitGot::RepoFinder"; ## no critic: 'ProhibitStringyEval'
+	my $finder = Orbital::Payload::Tool::GitGot::RepoFinder->new;
 };
 
 method run() {

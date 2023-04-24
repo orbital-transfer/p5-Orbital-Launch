@@ -13,8 +13,8 @@ option gitgot_tag => (
 );
 
 lazy gitgot => method() {
-	eval "require Orbital::Payload::Meta::GitGot"; ## no critic: 'ProhibitStringyEval'
-	Orbital::Payload::Meta::GitGot->new;
+	eval "require Orbital::Payload::Tool::GitGot"; ## no critic: 'ProhibitStringyEval'
+	Orbital::Payload::Tool::GitGot->new;
 };
 
 method run() {
