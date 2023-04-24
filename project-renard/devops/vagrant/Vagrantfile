@@ -143,10 +143,12 @@ end
 		win10.vm.provider "virtualbox" do |v|
 			v.memory = 2048
 		end
+		win10.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 		win10.vm.provision :shell,
 			inline: <<~PWSH
 			Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
-			choco install -y --allowemptychecksum strawberryperl git -c 'choco install -y --allowemptychecksum msys2 --params " /InstallDir:C:/msys64"'
+			choco install -y --allowemptychecksum strawberryperl git
+			choco install -y --allowemptychecksum msys2 --params " /InstallDir:C:/msys64"
 			choco install -y --allowemptychecksum vim
 			PWSH
 	end
