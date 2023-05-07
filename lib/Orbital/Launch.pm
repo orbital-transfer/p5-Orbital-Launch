@@ -52,6 +52,7 @@ use Orbital::Transfer::Common::Types qw(AbsDir);
 use Orbital::Payload::Sys::System::Debian;
 use Orbital::Payload::Sys::System::MacOSHomebrew;
 use Orbital::Payload::Sys::System::MSYS2;
+use Orbital::Payload::Sys::System::Docker;
 
 has repo_url_to_repo => (
 	is => 'ro',
@@ -249,6 +250,12 @@ method fetch_git($repo) {
 			$repo = $urls->{ $repos->{git} };
 		} else {
 			my $path = $self->clone_git( $repos->{git}, $repos->{branch} );
+			if( Orbital::Payload::Sys::System::Docker->is_inside_docker ) {
+				# Needed for:
+				#   - <https://github.blog/2022-04-18-highlights-from-git-2-36/#stricter-repository-ownership-checks>
+				#   - <https://github.blog/2022-04-12-git-security-vulnerability-announced/#cve-2022-24765>
+				system( qw( git config --global --add safe.directory ), $path );
+			}
 
 			$repo = $self->repo_for_directory($path);
 			$urls->{ $repos->{git} } = $repo;
