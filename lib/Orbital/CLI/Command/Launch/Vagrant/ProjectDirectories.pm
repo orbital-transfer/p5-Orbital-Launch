@@ -19,10 +19,10 @@ lazy gitgot => method() {
 
 method run() {
 	my @directories;
-	for my $repo (@{ $self->gitgot->data }) {
-		push @directories, $repo->repo_path
-			if -d $repo->repo_path
-				&& grep { $_ eq $self->gitgot_tag } @{ $repo->repo_tags };
+	for my $repo (@{ $self->gitgot->repos }) {
+		push @directories, $repo->path
+			if -d $repo->path
+				&& grep { $_ eq $self->gitgot_tag } @{ $repo->tags };
 	}
 	print join "\0", @directories;
 }
