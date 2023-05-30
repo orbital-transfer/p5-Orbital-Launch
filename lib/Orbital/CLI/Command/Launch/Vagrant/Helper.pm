@@ -4,7 +4,7 @@ package Orbital::CLI::Command::Launch::Vagrant::Helper;
 
 use Orbital::Transfer::Common::Setup;
 use Mu;
-use CLI::Osprey;
+use CLI::Osprey on_demand => 1;
 use Data::Section -setup;
 
 method run() {

@@ -4,7 +4,7 @@ package Orbital::CLI::Command::Launch::RepoInfo;
 
 use Orbital::Transfer::Common::Setup;
 use Mu;
-use CLI::Osprey;
+use CLI::Osprey on_demand => 1;
 use Storable qw(dclone);
 use Module::Load;
 

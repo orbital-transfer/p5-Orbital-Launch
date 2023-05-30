@@ -4,7 +4,7 @@ package Orbital::Launch::CIGen;
 
 use Orbital::Transfer::Common::Setup;
 use Moo;
-use CLI::Osprey;
+use CLI::Osprey on_demand => 1;
 
 use Orbital::Launch::CIGen::AppVeyor;
 use Orbital::Launch::CIGen::TravisCI;

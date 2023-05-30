@@ -3,7 +3,7 @@ package Orbital::Launch::Command::SelfPack;
 
 use Orbital::Transfer::Common::Setup;
 use Moo;
-use CLI::Osprey;
+use CLI::Osprey on_demand => 1;
 use Path::Tiny;
 use File::chdir;
 use CPAN::Meta;

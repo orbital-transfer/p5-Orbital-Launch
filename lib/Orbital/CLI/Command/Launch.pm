@@ -4,7 +4,7 @@ package Orbital::CLI::Command::Launch;
 
 use Orbital::Transfer::Common::Setup;
 use Moo;
-use CLI::Osprey;
+use CLI::Osprey on_demand => 1;
 
 method run() {
 	require Orbital::Launch;
