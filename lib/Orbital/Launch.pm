@@ -190,7 +190,7 @@ method meta_set_installed_version( $repo ) {
 }
 
 use Git::Wrapper;
-use List::AllUtils qw(first);
+use List::Util::MaybeXS qw(first);
 use Orbital::Payload::VCS::Git;
 method git_repo_git_describe( $repo ) {
 	my $git = Orbital::Payload::VCS::Git->new( directory => $repo->directory );
